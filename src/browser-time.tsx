@@ -2,6 +2,8 @@ import { Action, ActionPanel, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { DomainUsage, getBrowserUsage } from "./core/browser";
 import { formatDuration } from "./core/presentation";
+import { BrowserRuleForm } from "./browser-rules";
+import { ExcludeBrowserForm } from "./browser-exclusions";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 
@@ -25,6 +27,16 @@ export default function BrowserTime() {
         actions={
           <ActionPanel>
             <Action title="Refresh Browser Time" icon={Icon.ArrowClockwise} onAction={revalidate} />
+            <Action.Push
+              title="Set Domain Category"
+              icon={Icon.Pencil}
+              target={<BrowserRuleForm host={usage.host} />}
+            />
+            <Action.Push
+              title="Exclude Domain"
+              icon={Icon.EyeDisabled}
+              target={<ExcludeBrowserForm host={usage.host} />}
+            />
             <Action.OpenInBrowser title="Open Domain" url={`https://${usage.host}`} />
           </ActionPanel>
         }

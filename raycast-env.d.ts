@@ -45,6 +45,10 @@ declare namespace Preferences {
   export type BrowserPulse = ExtensionPreferences & {}
   /** Preferences accessible in the `browser-time` command */
   export type BrowserTime = ExtensionPreferences & {}
+  /** Preferences accessible in the `browser-rules` command */
+  export type BrowserRules = ExtensionPreferences & {}
+  /** Preferences accessible in the `browser-exclusions` command */
+  export type BrowserExclusions = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -80,5 +84,9 @@ declare namespace Arguments {
   export type BrowserPulse = {}
   /** Arguments passed to the `browser-time` command */
   export type BrowserTime = {}
+  /** Arguments passed to the `browser-rules` command */
+  export type BrowserRules = {}
+  /** Arguments passed to the `browser-exclusions` command */
+  export type BrowserExclusions = {}
 }
 

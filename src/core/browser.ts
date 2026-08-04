@@ -1,6 +1,7 @@
 import { BrowserExtension, LocalStorage } from "@raycast/api";
 
 const STORAGE_KEY = "writing-signal:browser-activity:v1";
+const RULES_STORAGE_KEY = "writing-signal:browser-rules:v1";
 const MAX_PULSE_GAP_MS = 2 * 60_000;
 
 export type BrowserCategory = "writing" | "creating" | "consuming" | "other";
@@ -11,6 +12,8 @@ type BrowserState = {
   days: Record<string, Record<string, DomainUsage>>;
   previous?: { host: string; category: BrowserCategory; seenAt: string };
 };
+
+type BrowserRules = { categoryByHost: Record<string, BrowserCategory>; excludedHosts: string[] };
 
 function dayKey(date: Date): string {
   return date.toLocaleDateString("en-CA");
@@ -55,16 +58,72 @@ async function saveState(state: BrowserState): Promise<void> {
   await LocalStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+async function getRules(): Promise<BrowserRules> {
+  const raw = await LocalStorage.getItem<string>(RULES_STORAGE_KEY);
+  if (!raw) return { categoryByHost: {}, excludedHosts: [] };
+  try {
+    const parsed = JSON.parse(raw) as Partial<BrowserRules>;
+    return { categoryByHost: parsed.categoryByHost ?? {}, excludedHosts: parsed.excludedHosts ?? [] };
+  } catch {
+    return { categoryByHost: {}, excludedHosts: [] };
+  }
+}
+
+async function saveRules(rules: BrowserRules): Promise<void> {
+  await LocalStorage.setItem(RULES_STORAGE_KEY, JSON.stringify(rules));
+}
+
+export async function getBrowserRules(): Promise<BrowserRules> {
+  return getRules();
+}
+
+export async function setBrowserCategory(host: string, category: BrowserCategory): Promise<void> {
+  const normalized = normalizeHost(host);
+  if (!normalized) throw new Error("Hostname is required");
+  const rules = await getRules();
+  rules.categoryByHost[normalized] = category;
+  await saveRules(rules);
+}
+
+export async function removeBrowserCategory(host: string): Promise<void> {
+  const rules = await getRules();
+  delete rules.categoryByHost[normalizeHost(host)];
+  await saveRules(rules);
+}
+
+export async function excludeBrowserHost(host: string): Promise<void> {
+  const normalized = normalizeHost(host);
+  if (!normalized) throw new Error("Hostname is required");
+  const rules = await getRules();
+  rules.excludedHosts = [...new Set([...rules.excludedHosts, normalized])].sort();
+  await saveRules(rules);
+}
+
+export async function includeBrowserHost(host: string): Promise<void> {
+  const rules = await getRules();
+  rules.excludedHosts = rules.excludedHosts.filter((entry) => entry !== normalizeHost(host));
+  await saveRules(rules);
+}
+
+function normalizeHost(host: string): string {
+  return host
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .split("/")[0];
+}
+
 export async function recordBrowserPulse(now = new Date()): Promise<DomainUsage | undefined> {
   const tabs = await BrowserExtension.getTabs();
   const activeTab = tabs.find((tab) => tab.active && /^https?:/i.test(tab.url));
   if (!activeTab) return undefined;
 
-  const host = new URL(activeTab.url).hostname.replace(/^www\./, "").toLowerCase();
-  const category = categoryForHost(host);
+  const host = normalizeHost(new URL(activeTab.url).hostname);
+  const rules = await getRules();
   const state = await getState();
   const previous = state.previous;
-  if (previous) {
+  if (previous && !rules.excludedHosts.includes(previous.host)) {
     const previousDate = new Date(previous.seenAt);
     const milliseconds = Math.min(Math.max(0, now.getTime() - previousDate.getTime()), MAX_PULSE_GAP_MS);
     if (milliseconds > 0) {
@@ -76,6 +135,12 @@ export async function recordBrowserPulse(now = new Date()): Promise<DomainUsage 
       state.days[key] = domains;
     }
   }
+  if (rules.excludedHosts.includes(host)) {
+    state.previous = undefined;
+    await saveState(state);
+    return undefined;
+  }
+  const category = rules.categoryByHost[host] ?? categoryForHost(host);
   state.previous = { host, category, seenAt: now.toISOString() };
   await saveState(state);
   return { host, category, milliseconds: 0 };
@@ -99,5 +164,5 @@ export async function getBrowserUsage(from: Date, through: Date): Promise<Domain
 }
 
 export async function clearBrowserData(): Promise<void> {
-  await LocalStorage.removeItem(STORAGE_KEY);
+  await Promise.all([LocalStorage.removeItem(STORAGE_KEY), LocalStorage.removeItem(RULES_STORAGE_KEY)]);
 }

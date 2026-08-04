@@ -138,6 +138,20 @@
         "description": "See local time by website hostname from the enabled browser tracker.",
         "mode": "view",
         "keywords": ["websites", "domains", "browser"]
+      },
+      {
+        "name": "browser-rules",
+        "title": "Manage Browser Rules",
+        "description": "Override the category assigned to browser hostnames.",
+        "mode": "view",
+        "keywords": ["domains", "category", "websites"]
+      },
+      {
+        "name": "browser-exclusions",
+        "title": "Manage Browser Exclusions",
+        "description": "Choose hostnames browser tracking must never record.",
+        "mode": "view",
+        "keywords": ["domains", "private", "exclude"]
       }
   ]
 }
