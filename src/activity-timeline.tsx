@@ -1,8 +1,9 @@
 import { Action, ActionPanel, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { getCollectorSummary, segmentsForDay } from "./core/collector";
+import { getCollectorSummary, localDayKey, segmentsForDay } from "./core/collector";
 import { formatDuration } from "./core/presentation";
 import AppActivityDetail from "./app-activity-detail";
+import { useState } from "react";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 
@@ -12,12 +13,44 @@ function timeRange(startedAt: string, endedAt: string): string {
   return `${start.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} – ${end.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
 }
 
+function recentDays(): Date[] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Array.from({ length: 14 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - index);
+    return date;
+  });
+}
+
+function dayLabel(date: Date): string {
+  if (localDayKey(date) === localDayKey()) return "Today";
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (localDayKey(date) === localDayKey(yesterday)) return "Yesterday";
+  return date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+}
+
 export default function ActivityTimeline() {
   const { data: summary, isLoading, revalidate } = usePromise(getCollectorSummary);
-  const segments = segmentsForDay(summary);
+  const dates = recentDays();
+  const [selectedDay, setSelectedDay] = useState(localDayKey());
+  const selectedDate = dates.find((date) => localDayKey(date) === selectedDay) ?? new Date();
+  const segments = segmentsForDay(summary, selectedDate);
   return (
-    <List isLoading={isLoading} navigationTitle="Today’s Activity Timeline" searchBarPlaceholder="Filter activity">
-      <List.Section title="Today" subtitle={`${segments.length} segments`}>
+    <List
+      isLoading={isLoading}
+      navigationTitle="Activity Timeline"
+      searchBarPlaceholder="Filter activity"
+      searchBarAccessory={
+        <List.Dropdown tooltip="Timeline day" value={selectedDay} onChange={setSelectedDay}>
+          {dates.map((date) => (
+            <List.Dropdown.Item key={localDayKey(date)} title={dayLabel(date)} value={localDayKey(date)} />
+          ))}
+        </List.Dropdown>
+      }
+    >
+      <List.Section title={dayLabel(selectedDate)} subtitle={`${segments.length} segments`}>
         {segments.map((segment) => {
           const seconds = Math.max(
             0,
