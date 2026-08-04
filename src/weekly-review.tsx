@@ -1,6 +1,12 @@
 import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { CollectorApplication, CollectorCategory, getCollectorSummary, localDayKey } from "./core/collector";
+import {
+  CollectorApplication,
+  CollectorCategory,
+  contextSwitchesForDay,
+  getCollectorSummary,
+  localDayKey,
+} from "./core/collector";
 import { formatDuration, formatNumber } from "./core/presentation";
 import { getState } from "./core/storage";
 
@@ -40,6 +46,7 @@ export default function WeeklyReview() {
         totalAppMillis: apps.reduce((total, app) => total + app.seconds * 1_000, 0),
         categories,
         intentionalMillis: intentional ? Object.values(intentional).reduce((total, value) => total + value, 0) : 0,
+        contextSwitches: contextSwitchesForDay(collector, date),
       };
     });
     return days;
@@ -50,12 +57,12 @@ export default function WeeklyReview() {
 
 Your local seven-day signal: foreground app time, intentional timers, selected-text totals, and optional aggregate keyboard estimates. It contains no raw writing or key values.
 
-| Day | App time | Write | Create | Consume | Intentional | Selected words | Est. typed |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Day | App time | Write | Create | Consume | Switches | Intentional | Selected words | Est. typed |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 ${data
   .map(
     (day) =>
-      `| ${day.date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} | ${formatDuration(day.totalAppMillis)} | ${formatDuration(day.categories.writing)} | ${formatDuration(day.categories.creating)} | ${formatDuration(day.categories.consuming)} | ${formatDuration(day.intentionalMillis)} | ${formatNumber(day.selectedWords)} | ${formatNumber(day.estimatedWords)} |`,
+      `| ${day.date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} | ${formatDuration(day.totalAppMillis)} | ${formatDuration(day.categories.writing)} | ${formatDuration(day.categories.creating)} | ${formatDuration(day.categories.consuming)} | ${formatNumber(day.contextSwitches)} | ${formatDuration(day.intentionalMillis)} | ${formatNumber(day.selectedWords)} | ${formatNumber(day.estimatedWords)} |`,
   )
   .join("\n")}
 
@@ -65,6 +72,7 @@ ${data
 - Writing apps: ${formatDuration(data.reduce((total, day) => total + day.categories.writing, 0))}
 - Creating apps: ${formatDuration(data.reduce((total, day) => total + day.categories.creating, 0))}
 - Consuming apps: ${formatDuration(data.reduce((total, day) => total + day.categories.consuming, 0))}
+- App context switches: ${formatNumber(data.reduce((total, day) => total + day.contextSwitches, 0))}
 - Intentional timer time: ${formatDuration(data.reduce((total, day) => total + day.intentionalMillis, 0))}
 - Selected-text words: ${formatNumber(data.reduce((total, day) => total + day.selectedWords, 0))}
 - Estimated typed words: ${formatNumber(data.reduce((total, day) => total + day.estimatedWords, 0))}

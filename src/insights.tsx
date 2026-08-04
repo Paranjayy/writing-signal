@@ -47,6 +47,7 @@ Targets are optional and only live in your Raycast local storage.
 
 - ${formatDuration(data.insight.automaticAppMillis)} of app activity today
 - ${formatDuration(data.insight.automaticWeekMillis)} of app activity in the last 7 days
+- ${formatNumber(data.insight.contextSwitchesToday)} app context switches today
 - Today’s main app: ${data.insight.topApp ? `${data.insight.topApp.name} (${formatDuration(data.insight.topApp.seconds * 1_000)})` : "not collected yet"}
 - Week’s main app: ${data.insight.topWeekApp ? `${data.insight.topWeekApp.name} (${formatDuration(data.insight.topWeekApp.seconds * 1_000)})` : "not collected yet"}
 

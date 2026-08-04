@@ -1,5 +1,12 @@
 import { DomainUsage } from "./browser";
-import { CollectorApplication, CollectorCategory, CollectorSummary, usageForDay, usageForRange } from "./collector";
+import {
+  CollectorApplication,
+  CollectorCategory,
+  CollectorSummary,
+  contextSwitchesForDay,
+  usageForDay,
+  usageForRange,
+} from "./collector";
 import { aggregateDays } from "./storage";
 import { WritingState } from "./types";
 
@@ -13,6 +20,7 @@ export type InsightSnapshot = {
   topWeekApp?: CollectorApplication;
   categoryMillis: Record<CollectorCategory, number>;
   topDomain?: DomainUsage;
+  contextSwitchesToday: number;
 };
 
 export function buildInsights(
@@ -40,5 +48,6 @@ export function buildInsights(
     topWeekApp: weekApps[0],
     categoryMillis,
     topDomain: browserUsage[0],
+    contextSwitchesToday: contextSwitchesForDay(collector, now),
   };
 }

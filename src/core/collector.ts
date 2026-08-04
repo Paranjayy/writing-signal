@@ -256,3 +256,16 @@ export function segmentsForDay(summary: CollectorSummary | undefined, date = new
   }
   return segments.sort((left, right) => new Date(right.startedAt).getTime() - new Date(left.startedAt).getTime());
 }
+
+export function contextSwitchesForDay(summary: CollectorSummary | undefined, date = new Date()): number {
+  const segments = segmentsForDay(summary, date).sort(
+    (left, right) => new Date(left.startedAt).getTime() - new Date(right.startedAt).getTime(),
+  );
+  return segments.reduce(
+    (switches, segment, index) =>
+      index > 0 && segment.application.bundleIdentifier !== segments[index - 1].application.bundleIdentifier
+        ? switches + 1
+        : switches,
+    0,
+  );
+}
