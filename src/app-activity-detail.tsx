@@ -74,7 +74,7 @@ These are counts only; no keys or text are stored.`
           <Action.Push
             title="Set App Category"
             icon={Icon.Pencil}
-            target={<AppRuleForm bundleIdentifier={application.bundleIdentifier} />}
+            target={<AppRuleForm bundleIdentifier={application.bundleIdentifier} category={application.category} />}
           />
           <Action.Push
             title="Exclude App from Tracking"

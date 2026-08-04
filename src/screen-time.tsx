@@ -44,7 +44,7 @@ export default function ScreenTime() {
             <Action.Push
               title="Set App Category"
               icon={Icon.Pencil}
-              target={<AppRuleForm bundleIdentifier={app.bundleIdentifier} />}
+              target={<AppRuleForm bundleIdentifier={app.bundleIdentifier} category={app.category} />}
             />
             <Action.Push
               title="Exclude App from Tracking"

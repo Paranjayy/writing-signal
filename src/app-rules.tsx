@@ -19,9 +19,11 @@ type RuleValues = { bundleIdentifier: string; category: CollectorCategory };
 
 export function AppRuleForm({
   bundleIdentifier = "",
+  category = "creating",
   onSaved,
 }: {
   bundleIdentifier?: string;
+  category?: CollectorCategory;
   onSaved?: () => Promise<void>;
 }) {
   async function submit(values: RuleValues) {
@@ -49,7 +51,7 @@ export function AppRuleForm({
         defaultValue={bundleIdentifier}
         placeholder="com.example.app"
       />
-      <Form.Dropdown id="category" title="Category" defaultValue="creating">
+      <Form.Dropdown id="category" title="Category" defaultValue={category}>
         {COLLECTOR_CATEGORIES.map((category) => (
           <Form.Dropdown.Item key={category} value={category} title={labels[category]} />
         ))}
@@ -97,7 +99,7 @@ export default function AppRules() {
               <Action.Push
                 title="Edit Rule"
                 icon={Icon.Pencil}
-                target={<AppRuleForm bundleIdentifier={bundleIdentifier} onSaved={refreshRules} />}
+                target={<AppRuleForm bundleIdentifier={bundleIdentifier} category={category} onSaved={refreshRules} />}
               />
               <Action
                 title="Remove Rule"
