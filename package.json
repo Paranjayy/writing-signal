@@ -187,6 +187,13 @@
         "description": "See optional local keyboard aggregates by foreground app.",
         "mode": "view",
         "keywords": ["typing", "words", "keys"]
+      },
+      {
+        "name": "activity-history",
+        "title": "Open Activity History",
+        "description": "Review the last 14 days of local foreground-app time.",
+        "mode": "view",
+        "keywords": ["weekly", "screen time", "recap"]
       }
   ]
 }
