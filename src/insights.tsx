@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getBrowserUsage } from "./core/browser";
 import { getCollectorSummary } from "./core/collector";
@@ -73,6 +73,11 @@ ${data.insight.topDomain ? `Most-used hostname today: **${data.insight.topDomain
       actions={
         <ActionPanel>
           <Action title="Refresh Insights" icon={Icon.ArrowClockwise} onAction={revalidate} />
+          <Action
+            title="Open Weekly Review"
+            icon={Icon.Calendar}
+            onAction={() => launchCommand({ name: "weekly-review", type: LaunchType.UserInitiated })}
+          />
         </ActionPanel>
       }
     />

@@ -190,6 +190,13 @@
         "keywords": ["summary", "balance", "weekly"]
       },
       {
+        "name": "weekly-review",
+        "title": "Open Weekly Review",
+        "description": "See seven days of local app time, writing, intentional activity, and keyboard estimates.",
+        "mode": "view",
+        "keywords": ["weekly", "review", "balance"]
+      },
+      {
         "name": "goals",
         "title": "Set Daily Goals",
         "description": "Set optional daily writing, focused-work, and creating targets.",

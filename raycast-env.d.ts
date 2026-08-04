@@ -59,6 +59,8 @@ declare namespace Preferences {
   export type ActivityTimeline = ExtensionPreferences & {}
   /** Preferences accessible in the `insights` command */
   export type Insights = ExtensionPreferences & {}
+  /** Preferences accessible in the `weekly-review` command */
+  export type WeeklyReview = ExtensionPreferences & {}
   /** Preferences accessible in the `goals` command */
   export type Goals = ExtensionPreferences & {}
   /** Preferences accessible in the `export-data` command */
@@ -120,6 +122,8 @@ declare namespace Arguments {
   export type ActivityTimeline = {}
   /** Arguments passed to the `insights` command */
   export type Insights = {}
+  /** Arguments passed to the `weekly-review` command */
+  export type WeeklyReview = {}
   /** Arguments passed to the `goals` command */
   export type Goals = {}
   /** Arguments passed to the `export-data` command */
