@@ -2,6 +2,7 @@ import { Action, ActionPanel, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, segmentsForDay } from "./core/collector";
 import { formatDuration } from "./core/presentation";
+import AppActivityDetail from "./app-activity-detail";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 
@@ -32,6 +33,11 @@ export default function ActivityTimeline() {
               actions={
                 <ActionPanel>
                   <Action title="Refresh Timeline" icon={Icon.ArrowClockwise} onAction={revalidate} />
+                  <Action.Push
+                    title="View App Activity"
+                    icon={Icon.BarChart}
+                    target={<AppActivityDetail application={segment.application} />}
+                  />
                 </ActionPanel>
               }
             />

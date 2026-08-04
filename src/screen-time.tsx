@@ -10,6 +10,7 @@ import {
 import { formatDuration } from "./core/presentation";
 import { AppRuleForm } from "./app-rules";
 import { ExcludeAppForm } from "./privacy-exclusions";
+import AppActivityDetail from "./app-activity-detail";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 
@@ -35,6 +36,11 @@ export default function ScreenTime() {
         actions={
           <ActionPanel>
             <Action title="Refresh Screen Time" icon={Icon.ArrowClockwise} onAction={revalidate} />
+            <Action.Push
+              title="View App Activity"
+              icon={Icon.BarChart}
+              target={<AppActivityDetail application={app} />}
+            />
             <Action.Push
               title="Set App Category"
               icon={Icon.Pencil}
