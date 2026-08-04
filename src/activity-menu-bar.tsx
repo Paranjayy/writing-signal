@@ -123,6 +123,11 @@ export default function ActivityMenuBar() {
           icon={Icon.BullsEye}
           onAction={() => launchCommand({ name: "goals", type: LaunchType.UserInitiated })}
         />
+        <MenuBarExtra.Item
+          title="Start Focus Block"
+          icon={Icon.Clock}
+          onAction={() => launchCommand({ name: "start-focus-block", type: LaunchType.UserInitiated })}
+        />
       </MenuBarExtra.Section>
     </MenuBarExtra>
   );
