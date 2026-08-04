@@ -17,6 +17,7 @@ A local-first Raycast prototype for understanding writing effort without retaini
 - Export a portable local JSON snapshot to an owner-only file in `Documents/Writing Signal Backups`.
 - Optionally create a passphrase-encrypted AES-256-GCM backup; its passphrase is never stored.
 - Tune the native collector's local idle threshold, so inactive time does not get counted as screen time.
+- Pause all automatic app and keyboard aggregate tracking for a chosen time window.
 
 ## Important boundaries
 

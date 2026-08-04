@@ -73,6 +73,8 @@ declare namespace Preferences {
   export type ActivityHistory = ExtensionPreferences & {}
   /** Preferences accessible in the `collector-settings` command */
   export type CollectorSettings = ExtensionPreferences & {}
+  /** Preferences accessible in the `tracking-pause` command */
+  export type TrackingPause = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -136,5 +138,7 @@ declare namespace Arguments {
   export type ActivityHistory = {}
   /** Arguments passed to the `collector-settings` command */
   export type CollectorSettings = {}
+  /** Arguments passed to the `tracking-pause` command */
+  export type TrackingPause = {}
 }
 

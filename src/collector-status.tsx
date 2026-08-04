@@ -1,16 +1,21 @@
 import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
+import { getCollectorPausedUntil, getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { formatDuration } from "./core/presentation";
 
 export default function CollectorStatus() {
-  const { data: summary, isLoading, revalidate } = usePromise(getCollectorSummary);
+  const { data, isLoading, revalidate } = usePromise(async () => {
+    const [summary, pausedUntil] = await Promise.all([getCollectorSummary(), getCollectorPausedUntil()]);
+    return { summary, pausedUntil };
+  });
+  const summary = data?.summary;
+  const pausedUntil = data?.pausedUntil;
   const tracked = usageForDay(summary).reduce((total, app) => total + app.seconds, 0);
   const keyboard = summary?.keyboardByDay[new Date().toLocaleDateString("en-CA")];
   const isLive = isCollectorLive(summary);
 
   const markdown = summary
-    ? `# Native Collector\n\n**Status:** ${isLive ? "tracking" : "stopped or stale"}  \n**Last summary:** ${new Date(summary.generatedAt).toLocaleString()}  \n**Active app:** ${isLive ? (summary.activeApplication?.name ?? "Unknown") : "Not currently reporting"}\n\n## Today\n\n- App time: ${formatDuration(tracked)}\n- Apps seen: ${usageForDay(summary).length}\n- Keyboard aggregate: ${keyboard ? `${keyboard.keyDowns} keys · ${keyboard.estimatedWords} estimated words` : "disabled"}\n\n## Consent\n\nApp tracking records only foreground app metadata and time. Keyboard activity is ${summary.settings.keyboardTrackingEnabled ? "enabled" : "disabled"}; it never stores key values or text.`
+    ? `# Native Collector\n\n**Status:** ${pausedUntil ? `paused until ${pausedUntil.toLocaleString()}` : isLive ? "tracking" : "stopped or stale"}  \n**Last summary:** ${new Date(summary.generatedAt).toLocaleString()}  \n**Active app:** ${pausedUntil ? "Collection paused" : isLive ? (summary.activeApplication?.name ?? "Unknown") : "Not currently reporting"}\n\n## Today\n\n- App time: ${formatDuration(tracked)}\n- Apps seen: ${usageForDay(summary).length}\n- Keyboard aggregate: ${keyboard ? `${keyboard.keyDowns} keys · ${keyboard.estimatedWords} estimated words` : "disabled"}\n\n## Consent\n\nApp tracking records only foreground app metadata and time. Keyboard activity is ${summary.settings.keyboardTrackingEnabled ? "enabled" : "disabled"}; it never stores key values or text.`
     : "# Native Collector\n\nNot running yet. The companion is optional and must be started deliberately.";
 
   return (
@@ -35,6 +40,11 @@ export default function CollectorStatus() {
             title="Set up Automatic Tracking"
             icon={Icon.WrenchScrewdriver}
             onAction={() => launchCommand({ name: "collector-setup", type: LaunchType.UserInitiated })}
+          />
+          <Action
+            title="Pause Automatic Tracking"
+            icon={Icon.Pause}
+            onAction={() => launchCommand({ name: "tracking-pause", type: LaunchType.UserInitiated })}
           />
         </ActionPanel>
       }

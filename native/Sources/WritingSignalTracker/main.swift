@@ -46,6 +46,7 @@ struct RuleFile: Codable {
   var categories: [String: ActivityCategory] = [:]
   var excludedBundleIdentifiers: [String]?
   var idleAfterSeconds: TimeInterval?
+  var pausedUntil: String?
 }
 
 struct CollectorSummary: Codable {
@@ -153,6 +154,15 @@ final class RuleStore {
           threshold >= 15 else { return nil }
     return threshold
   }
+
+  func isPaused() -> Bool {
+    guard let data = try? Data(contentsOf: url),
+          let rules = try? decoder.decode(RuleFile.self, from: data),
+          rules.schemaVersion == 1,
+          let pausedUntil = rules.pausedUntil,
+          let date = ISO8601DateFormatter().date(from: pausedUntil) else { return false }
+    return date > Date()
+  }
 }
 
 final class Tracker: NSObject {
@@ -202,14 +212,15 @@ final class Tracker: NSObject {
     defer { lastTick = now }
 
     let idle = isIdle()
+    let paused = ruleStore.isPaused()
     let nextApplication: ApplicationSnapshot?
-    if let app = activeApplication(), !ruleStore.isExcluded(app.bundleIdentifier), !idle {
+    if let app = activeApplication(), !ruleStore.isExcluded(app.bundleIdentifier), !idle, !paused {
       nextApplication = app
     } else {
       nextApplication = nil
     }
 
-    if let previous = summary.activeApplication, elapsed > 0, !idle {
+    if let previous = summary.activeApplication, elapsed > 0, !idle, !paused {
       add(seconds: elapsed, for: previous, on: lastTick)
     }
 

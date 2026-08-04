@@ -237,6 +237,13 @@
         "description": "Choose when idle time stops counting toward app activity.",
         "mode": "view",
         "keywords": ["idle", "accuracy", "screen time"]
+      },
+      {
+        "name": "tracking-pause",
+        "title": "Pause Automatic Tracking",
+        "description": "Temporarily stop automatic app and keyboard aggregate collection.",
+        "mode": "view",
+        "keywords": ["privacy", "pause", "stop"]
       }
   ]
 }

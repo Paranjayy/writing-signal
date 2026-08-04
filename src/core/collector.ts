@@ -48,6 +48,7 @@ type RuleFile = {
   categories: Record<string, CollectorCategory>;
   excludedBundleIdentifiers?: string[];
   idleAfterSeconds?: number;
+  pausedUntil?: string;
 };
 
 function collectorDirectory(): string {
@@ -95,6 +96,10 @@ async function getRuleFile(): Promise<RuleFile> {
           idleAfterSeconds:
             typeof parsed.idleAfterSeconds === "number" && Number.isFinite(parsed.idleAfterSeconds)
               ? Math.max(15, Math.floor(parsed.idleAfterSeconds))
+              : undefined,
+          pausedUntil:
+            typeof parsed.pausedUntil === "string" && Number.isFinite(new Date(parsed.pausedUntil).getTime())
+              ? parsed.pausedUntil
               : undefined,
         }
       : { schemaVersion: 1, categories: {}, excludedBundleIdentifiers: [] };
@@ -154,6 +159,19 @@ export async function setCollectorIdleAfterSeconds(seconds: number): Promise<voi
   if (!Number.isFinite(seconds) || seconds < 15) throw new Error("Idle threshold must be at least 15 seconds");
   const rules = await getRuleFile();
   rules.idleAfterSeconds = Math.floor(seconds);
+  await writeRules(rules);
+}
+
+export async function getCollectorPausedUntil(): Promise<Date | undefined> {
+  const value = (await getRuleFile()).pausedUntil;
+  if (!value) return undefined;
+  const date = new Date(value);
+  return date > new Date() ? date : undefined;
+}
+
+export async function setCollectorPausedUntil(until: Date | undefined): Promise<void> {
+  const rules = await getRuleFile();
+  rules.pausedUntil = until && until > new Date() ? until.toISOString() : undefined;
   await writeRules(rules);
 }
 

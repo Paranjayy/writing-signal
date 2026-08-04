@@ -51,6 +51,10 @@ Use **Manage Privacy Exclusions** for apps that must never be recorded at all. A
 
 Use Raycast’s **Automatic Tracking Settings** command to choose how long no input must occur before the collector stops attributing foreground-app time. The setting is local, affects only future time, and is applied immediately without restarting the companion.
 
+## Temporary pause
+
+Use **Pause Automatic Tracking** in Raycast to stop all automatic app-time and keyboard aggregate collection for 15 minutes, an hour, three hours, or until tomorrow. The collector applies the local pause immediately; no uninstall or restart is necessary.
+
 ## Limits of this first companion
 
 - It tracks while the process is running; a signed app plus user-approved launch agent is the next packaging step.
