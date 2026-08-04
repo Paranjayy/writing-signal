@@ -1,6 +1,6 @@
 import { Action, ActionPanel, Detail, Icon, openExtensionPreferences } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { getCollectorSummary, usageForDay } from "./core/collector";
+import { getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { getBrowserUsage } from "./core/browser";
 import { activeSessionMillisSince, aggregateDays, dayKey, getState } from "./core/storage";
 import { dashboardMarkdown } from "./core/presentation";
@@ -52,7 +52,13 @@ export default function Dashboard() {
           <Detail.Metadata.Label title="Selected text" text="Never retained" />
           <Detail.Metadata.Label
             title="Automatic tracking"
-            text={collector ? "Native companion connected" : "Not connected"}
+            text={
+              isCollectorLive(collector)
+                ? "Native companion active"
+                : collector
+                  ? "Last collector data is stale"
+                  : "Not connected"
+            }
           />
           <Detail.Metadata.Label title="Today" text={dayKey(now)} />
         </Detail.Metadata>

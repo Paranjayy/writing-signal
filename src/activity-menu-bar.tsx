@@ -1,6 +1,6 @@
 import { Icon, launchCommand, LaunchType, MenuBarExtra } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { getCollectorSummary, usageForDay } from "./core/collector";
+import { getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { getGoals } from "./core/goals";
 import { formatDuration } from "./core/presentation";
 import { dayKey, getState } from "./core/storage";
@@ -11,16 +11,29 @@ export default function ActivityMenuBar() {
     return { summary, goals, state };
   });
   const summary = data?.summary;
+  const isLive = isCollectorLive(summary);
   const usage = usageForDay(summary);
   const total = usage.reduce((sum, app) => sum + app.seconds, 0);
-  const active = summary?.activeApplication;
+  const active = isLive ? summary?.activeApplication : undefined;
   const today = data?.state.days[dayKey(new Date())];
   const title = active ? `${formatDuration(total)} · ${active.name}` : "Activity";
 
   return (
     <MenuBarExtra title={title} icon={Icon.Clock} isLoading={isLoading} tooltip="Writing Signal">
-      <MenuBarExtra.Section title={active ? `Now: ${active.name}` : "Collector not connected"}>
-        <MenuBarExtra.Item title={active ? `Category: ${active.category}` : "Run the native collector to begin"} />
+      <MenuBarExtra.Section
+        title={
+          active ? `Now: ${active.name}` : summary ? "Collector not currently reporting" : "Collector not connected"
+        }
+      >
+        <MenuBarExtra.Item
+          title={
+            active
+              ? `Category: ${active.category}`
+              : summary
+                ? "Last data is stale; check collector status"
+                : "Run the native collector to begin"
+          }
+        />
         <MenuBarExtra.Item title={`Today: ${formatDuration(total)}`} />
       </MenuBarExtra.Section>
       {data &&

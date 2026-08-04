@@ -41,6 +41,8 @@ export type CollectorSummary = {
   keyboardByDayAndApplication?: Record<string, Record<string, CollectorKeyboardSummary>>;
 };
 
+const COLLECTOR_STALE_AFTER_MILLISECONDS = 15_000;
+
 type RuleFile = {
   schemaVersion: 1;
   categories: Record<string, CollectorCategory>;
@@ -65,6 +67,16 @@ export async function getCollectorSummary(): Promise<CollectorSummary | undefine
   } catch {
     return undefined;
   }
+}
+
+export function isCollectorLive(summary: CollectorSummary | undefined, now = new Date()): boolean {
+  if (!summary?.isTracking) return false;
+  const generatedAt = new Date(summary.generatedAt).getTime();
+  return (
+    Number.isFinite(generatedAt) &&
+    now.getTime() - generatedAt >= 0 &&
+    now.getTime() - generatedAt < COLLECTOR_STALE_AFTER_MILLISECONDS
+  );
 }
 
 export async function getCollectorRules(): Promise<Record<string, CollectorCategory>> {
