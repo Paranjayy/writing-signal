@@ -166,6 +166,13 @@
         "description": "See a local summary of writing, creating, consuming, apps, and browser activity.",
         "mode": "view",
         "keywords": ["summary", "balance", "weekly"]
+      },
+      {
+        "name": "goals",
+        "title": "Set Daily Goals",
+        "description": "Set optional daily writing, focused-work, and creating targets.",
+        "mode": "view",
+        "keywords": ["target", "progress", "writing"]
       }
   ]
 }
