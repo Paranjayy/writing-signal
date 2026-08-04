@@ -1,6 +1,7 @@
 import { ACTIVITY_KINDS, ACTIVITY_LABELS, ActivityKind, DayStats, TokenCounts } from "./types";
 import { CollectorApplication, CollectorKeyboardSummary } from "./collector";
 import { DomainUsage } from "./browser";
+import { ClipboardDay } from "./clipboard-history";
 
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat().format(value);
@@ -45,6 +46,7 @@ export function dashboardMarkdown(
   appUsage: CollectorApplication[] = [],
   keyboard?: CollectorKeyboardSummary,
   browserUsage: DomainUsage[] = [],
+  clipboard?: ClipboardDay,
 ): string {
   const activeTodayLabel = activeKind ? formatActivityLabel(activeKind) : "";
   return `# Writing Signal
@@ -113,6 +115,10 @@ ${
         .join("\n")}`
     : "Enable Browser Activity Tracking to see hostname-only browser time here."
 }
+
+## Clipboard patterns (today)
+
+${clipboard ? `${formatNumber(clipboard.copies)} distinct text copies · ${formatNumber(clipboard.words)} words · ${formatNumber(clipboard.linkLikeCopies)} link-like · ${formatNumber(clipboard.codeLikeCopies)} code-like` : "Enable Clipboard Pattern Tracking to see aggregate clipboard habits here."}
 
 ${activeTodayMilliseconds > 0 ? `> ${activeTodayLabel} timer is currently running${plannedEndAt ? ` · planned to end at ${new Date(plannedEndAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : ""}.` : "> No activity timer is currently running."}
 `;

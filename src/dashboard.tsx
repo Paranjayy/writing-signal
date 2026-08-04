@@ -2,22 +2,24 @@ import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand, openExten
 import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { getBrowserUsage } from "./core/browser";
+import { aggregateClipboardHistory, getClipboardHistory } from "./core/clipboard-history";
 import { activeSessionMillisSince, aggregateDays, dayKey, getState } from "./core/storage";
 import { dashboardMarkdown } from "./core/presentation";
 
 export default function Dashboard() {
   const { data, isLoading, revalidate } = usePromise(async () => {
     const now = new Date();
-    const [state, collector, browserUsage] = await Promise.all([
+    const [state, collector, browserUsage, clipboardHistory] = await Promise.all([
       getState(),
       getCollectorSummary(),
       getBrowserUsage(now, now),
+      getClipboardHistory(),
     ]);
-    return { state, collector, browserUsage };
+    return { state, collector, browserUsage, clipboardHistory, now };
   });
   const state = data?.state;
   const collector = data?.collector;
-  const now = new Date();
+  const now = data?.now ?? new Date();
   const weekStart = new Date(now);
   weekStart.setDate(now.getDate() - 6);
 
@@ -44,6 +46,7 @@ export default function Dashboard() {
               usageForDay(collector),
               collector?.keyboardByDay[dayKey(now)],
               data?.browserUsage,
+              data ? aggregateClipboardHistory(data.clipboardHistory, now, now) : undefined,
             )
           : "# Writing Signal"
       }
