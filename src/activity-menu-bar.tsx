@@ -1,6 +1,12 @@
 import { Icon, launchCommand, LaunchType, MenuBarExtra } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { getCollectorPausedUntil, getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
+import {
+  getCollectorPausedUntil,
+  getCollectorSummary,
+  isCollectorLive,
+  setCollectorPausedUntil,
+  usageForDay,
+} from "./core/collector";
 import { getGoals } from "./core/goals";
 import { formatActivityLabel, formatDuration } from "./core/presentation";
 import { dayKey, getState } from "./core/storage";
@@ -51,6 +57,11 @@ export default function ActivityMenuBar() {
         />
         <MenuBarExtra.Item title={`Today: ${formatDuration(total)}`} />
       </MenuBarExtra.Section>
+      {pausedUntil && (
+        <MenuBarExtra.Section>
+          <MenuBarExtra.Item title="Resume Automatic Tracking" icon={Icon.Play} onAction={() => setCollectorPausedUntil(undefined)} />
+        </MenuBarExtra.Section>
+      )}
       {activeSession && (
         <MenuBarExtra.Section title="Intentional timer">
           <MenuBarExtra.Item
