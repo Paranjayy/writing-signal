@@ -37,6 +37,8 @@ declare namespace Preferences {
   export type CollectorStatus = ExtensionPreferences & {}
   /** Preferences accessible in the `activity-menu-bar` command */
   export type ActivityMenuBar = ExtensionPreferences & {}
+  /** Preferences accessible in the `app-rules` command */
+  export type AppRules = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -64,5 +66,7 @@ declare namespace Arguments {
   export type CollectorStatus = {}
   /** Arguments passed to the `activity-menu-bar` command */
   export type ActivityMenuBar = {}
+  /** Arguments passed to the `app-rules` command */
+  export type AppRules = {}
 }
 

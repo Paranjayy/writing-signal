@@ -19,6 +19,10 @@ swift run writing-signal-tracker --keyboard
 
 This requires a macOS **Input Monitoring** permission prompt. It records only aggregate counts—key presses, separators, deletes, and estimated words—and never saves key values or text.
 
+## App rules
+
+Use Raycast’s **Manage App Rules** command to override a bundle identifier’s broad category. Rules live in the same owner-only local directory and are applied immediately by the collector; no restart is needed.
+
 ## Limits of this first companion
 
 - It tracks while the process is running; a signed app plus user-approved launch agent is the next packaging step.

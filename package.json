@@ -109,6 +109,13 @@
         "mode": "menu-bar",
         "interval": "1m",
         "keywords": ["menubar", "current app", "time"]
+      },
+      {
+        "name": "app-rules",
+        "title": "Manage App Rules",
+        "description": "Override automatic categories for the apps you use.",
+        "mode": "view",
+        "keywords": ["category", "apps", "projects"]
       }
   ]
 }

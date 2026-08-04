@@ -35,6 +35,11 @@ struct CollectorSettings: Codable {
   var idleAfterSeconds: TimeInterval
 }
 
+struct RuleFile: Codable {
+  var schemaVersion = 1
+  var categories: [String: ActivityCategory] = [:]
+}
+
 struct CollectorSummary: Codable {
   var schemaVersion = 1
   var generatedAt = Date()
@@ -76,8 +81,12 @@ final class SummaryStore {
   private let encoder: JSONEncoder
   private let decoder = JSONDecoder()
 
+  static var dataDirectory: URL {
+    FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".writing-signal", isDirectory: true)
+  }
+
   init() throws {
-    let directory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".writing-signal", isDirectory: true)
+    let directory = Self.dataDirectory
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: directory.path)
     url = directory.appendingPathComponent("summary.json")
@@ -107,8 +116,21 @@ final class SummaryStore {
   }
 }
 
+final class RuleStore {
+  private let url = SummaryStore.dataDirectory.appendingPathComponent("rules.json")
+  private let decoder = JSONDecoder()
+
+  func category(for bundleIdentifier: String) -> ActivityCategory? {
+    guard let data = try? Data(contentsOf: url),
+          let rules = try? decoder.decode(RuleFile.self, from: data),
+          rules.schemaVersion == 1 else { return nil }
+    return rules.categories[bundleIdentifier]
+  }
+}
+
 final class Tracker: NSObject {
   private let store: SummaryStore
+  private let ruleStore = RuleStore()
   private var summary: CollectorSummary
   private let keyboardTracking: Bool
   private var timer: Timer?
@@ -141,7 +163,7 @@ final class Tracker: NSObject {
     return ApplicationSnapshot(
       name: app.localizedName ?? bundleIdentifier,
       bundleIdentifier: bundleIdentifier,
-      category: category(for: bundleIdentifier)
+      category: ruleStore.category(for: bundleIdentifier) ?? category(for: bundleIdentifier)
     )
   }
 

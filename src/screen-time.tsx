@@ -2,6 +2,7 @@ import { Action, ActionPanel, Detail, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, usageForDay } from "./core/collector";
 import { formatDuration } from "./core/presentation";
+import { AppRuleForm } from "./app-rules";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 
@@ -30,6 +31,11 @@ export default function ScreenTime() {
             actions={
               <ActionPanel>
                 <Action title="Refresh Screen Time" icon={Icon.ArrowClockwise} onAction={revalidate} />
+                <Action.Push
+                  title="Set App Category"
+                  icon={Icon.Pencil}
+                  target={<AppRuleForm bundleIdentifier={app.bundleIdentifier} />}
+                />
                 <Action.CopyToClipboard title="Copy Bundle Identifier" content={app.bundleIdentifier} />
               </ActionPanel>
             }
