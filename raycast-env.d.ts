@@ -67,6 +67,10 @@ declare namespace Preferences {
   export type WeeklyReview = ExtensionPreferences & {}
   /** Preferences accessible in the `goals` command */
   export type Goals = ExtensionPreferences & {}
+  /** Preferences accessible in the `daily-review-settings` command */
+  export type DailyReviewSettings = ExtensionPreferences & {}
+  /** Preferences accessible in the `daily-review-pulse` command */
+  export type DailyReviewPulse = ExtensionPreferences & {}
   /** Preferences accessible in the `export-data` command */
   export type ExportData = ExtensionPreferences & {}
   /** Preferences accessible in the `export-encrypted-data` command */
@@ -138,6 +142,10 @@ declare namespace Arguments {
   export type WeeklyReview = {}
   /** Arguments passed to the `goals` command */
   export type Goals = {}
+  /** Arguments passed to the `daily-review-settings` command */
+  export type DailyReviewSettings = {}
+  /** Arguments passed to the `daily-review-pulse` command */
+  export type DailyReviewPulse = {}
   /** Arguments passed to the `export-data` command */
   export type ExportData = {}
   /** Arguments passed to the `export-encrypted-data` command */

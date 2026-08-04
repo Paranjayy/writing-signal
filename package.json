@@ -219,6 +219,21 @@
         "keywords": ["target", "progress", "writing"]
       },
       {
+        "name": "daily-review-settings",
+        "title": "Daily Check-In Settings",
+        "description": "Choose an optional local daily writing and time-balance summary.",
+        "mode": "view",
+        "keywords": ["review", "reminder", "daily"]
+      },
+      {
+        "name": "daily-review-pulse",
+        "title": "Daily Check-In",
+        "description": "Show the optional local daily writing and activity summary at your chosen hour.",
+        "mode": "no-view",
+        "interval": "1h",
+        "keywords": ["review", "reminder", "daily"]
+      },
+      {
         "name": "export-data",
         "title": "Export Local Data",
         "description": "Write a private local JSON snapshot of your aggregates and settings.",

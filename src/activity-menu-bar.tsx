@@ -49,9 +49,9 @@ export default function ActivityMenuBar() {
             active
               ? `Category: ${active.category}`
               : summary
-              ? pausedUntil
-                ? `Paused until ${pausedUntil.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
-                : "Last data is stale; check collector status"
+                ? pausedUntil
+                  ? `Paused until ${pausedUntil.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`
+                  : "Last data is stale; check collector status"
                 : "Run the native collector to begin"
           }
         />
@@ -59,7 +59,11 @@ export default function ActivityMenuBar() {
       </MenuBarExtra.Section>
       {pausedUntil && (
         <MenuBarExtra.Section>
-          <MenuBarExtra.Item title="Resume Automatic Tracking" icon={Icon.Play} onAction={() => setCollectorPausedUntil(undefined)} />
+          <MenuBarExtra.Item
+            title="Resume Automatic Tracking"
+            icon={Icon.Play}
+            onAction={() => setCollectorPausedUntil(undefined)}
+          />
         </MenuBarExtra.Section>
       )}
       {activeSession && (
@@ -127,6 +131,11 @@ export default function ActivityMenuBar() {
           title="Start Focus Block"
           icon={Icon.Clock}
           onAction={() => launchCommand({ name: "start-focus-block", type: LaunchType.UserInitiated })}
+        />
+        <MenuBarExtra.Item
+          title="Daily Check-in Settings"
+          icon={Icon.Bell}
+          onAction={() => launchCommand({ name: "daily-review-settings", type: LaunchType.UserInitiated })}
         />
       </MenuBarExtra.Section>
     </MenuBarExtra>
