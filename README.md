@@ -31,6 +31,8 @@ npm run dev
 
 Open the Raycast development extension and use **Start Writing Session**, **Capture Writing Snapshot**, and **Open Writing Dashboard**.
 
+For automatic app time, open **Set Up Automatic Tracking** in Raycast. In this development workspace it builds and installs the local Swift companion after a clear consent confirmation. Choose keyboard aggregates only if you also want count-only typing estimates; macOS will request Input Monitoring permission.
+
 ## Privacy model
 
 - No analytics, sync, or network requests.

@@ -103,6 +103,13 @@
         "keywords": ["keyboard", "permissions", "native"]
       },
       {
+        "name": "collector-setup",
+        "title": "Set up Automatic Tracking",
+        "description": "Build and install the local native collector with clear consent choices.",
+        "mode": "view",
+        "keywords": ["install", "screen time", "keyboard"]
+      },
+      {
         "name": "activity-menu-bar",
         "title": "Activity at a Glance",
         "description": "Show current activity and today's local screen time in the menu bar.",

@@ -31,6 +31,11 @@ export default function CollectorStatus() {
             icon={Icon.Gear}
             onAction={() => launchCommand({ name: "collector-settings", type: LaunchType.UserInitiated })}
           />
+          <Action
+            title="Set up Automatic Tracking"
+            icon={Icon.WrenchScrewdriver}
+            onAction={() => launchCommand({ name: "collector-setup", type: LaunchType.UserInitiated })}
+          />
         </ActionPanel>
       }
     />

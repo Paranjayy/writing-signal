@@ -35,6 +35,8 @@ declare namespace Preferences {
   export type ScreenTime = ExtensionPreferences & {}
   /** Preferences accessible in the `collector-status` command */
   export type CollectorStatus = ExtensionPreferences & {}
+  /** Preferences accessible in the `collector-setup` command */
+  export type CollectorSetup = ExtensionPreferences & {}
   /** Preferences accessible in the `activity-menu-bar` command */
   export type ActivityMenuBar = ExtensionPreferences & {}
   /** Preferences accessible in the `app-rules` command */
@@ -90,6 +92,8 @@ declare namespace Arguments {
   export type ScreenTime = {}
   /** Arguments passed to the `collector-status` command */
   export type CollectorStatus = {}
+  /** Arguments passed to the `collector-setup` command */
+  export type CollectorSetup = {}
   /** Arguments passed to the `activity-menu-bar` command */
   export type ActivityMenuBar = {}
   /** Arguments passed to the `app-rules` command */
