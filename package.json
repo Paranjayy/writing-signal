@@ -87,6 +87,20 @@
         "description": "Review local data handling or erase all Writing Signal data.",
         "mode": "view",
         "keywords": ["security", "delete", "encryption"]
+      },
+      {
+        "name": "screen-time",
+        "title": "Open Automatic Screen Time",
+        "description": "See app-level time from the local native companion.",
+        "mode": "view",
+        "keywords": ["apps", "usage", "activity"]
+      },
+      {
+        "name": "collector-status",
+        "title": "Open Collector Status",
+        "description": "See the native companion's privacy settings and live status.",
+        "mode": "view",
+        "keywords": ["keyboard", "permissions", "native"]
       }
   ]
 }

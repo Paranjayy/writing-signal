@@ -28,3 +28,7 @@ The extension stores day-level aggregates, one active typed session, and capture
 A native companion may provide system-wide activity only after explicit macOS permission and a visible indicator. It must emit aggregate events to this same core module, not raw key or clipboard streams.
 
 Cross-device sync comes after the local event model is stable. The intended boundary is an end-to-end encrypted aggregate vault with an optional user passphrase; the sync provider must not receive text or a decryption key.
+
+## Native collector bridge
+
+`native/` is a macOS Swift companion that writes a minimal owner-only JSON summary for the Raycast extension. It tracks foreground app time by default and offers keyboard aggregates only behind a macOS Input Monitoring permission. It intentionally never records a key value, title, URL, or screenshot. The bridge is kept narrow so a future encrypted detailed-vault implementation can replace it without changing the extension UI contract.

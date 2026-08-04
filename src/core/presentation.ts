@@ -1,4 +1,5 @@
 import { ACTIVITY_KINDS, ACTIVITY_LABELS, ActivityKind, DayStats, TokenCounts } from "./types";
+import { CollectorApplication, CollectorKeyboardSummary } from "./collector";
 
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat().format(value);
@@ -39,6 +40,8 @@ export function dashboardMarkdown(
   activeTodayMilliseconds: number,
   activeWeekMilliseconds: number,
   activeKind?: ActivityKind,
+  appUsage: CollectorApplication[] = [],
+  keyboard?: CollectorKeyboardSummary,
 ): string {
   const activeTodayLabel = activeKind ? formatActivityLabel(activeKind) : "";
   return `# Writing Signal
@@ -81,6 +84,21 @@ ${activityRows(today)}
 | URLs | ${formatNumber(today.urls)} |
 | Punctuation | ${formatNumber(today.punctuation)} |
 | Other symbols | ${formatNumber(today.symbols)} |
+
+## Automatic screen time (today)
+
+${
+  appUsage.length > 0
+    ? `| App | Category | Time |\n| --- | --- | ---: |\n${appUsage
+        .slice(0, 8)
+        .map((app) => `| ${app.name} | ${app.category} | ${formatDuration(app.seconds)} |`)
+        .join("\n")}`
+    : "Start the native collector to see app-level time here."
+}
+
+## Keyboard activity (today)
+
+${keyboard ? `| Measure | Total |\n| --- | ---: |\n| Key presses | ${formatNumber(keyboard.keyDowns)} |\n| Estimated words | ${formatNumber(keyboard.estimatedWords)} |\n| Deletes | ${formatNumber(keyboard.deletions)} |` : "Disabled by default. Enable it only if aggregate keyboard activity is useful to you."}
 
 ${activeTodayMilliseconds > 0 ? `> ${activeTodayLabel} timer is currently running.` : "> No activity timer is currently running."}
 `;

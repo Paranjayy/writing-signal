@@ -1,10 +1,16 @@
 import { Action, ActionPanel, Detail, Icon, openExtensionPreferences } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
+import { getCollectorSummary, usageForDay } from "./core/collector";
 import { activeSessionMillisSince, aggregateDays, dayKey, getState } from "./core/storage";
 import { dashboardMarkdown } from "./core/presentation";
 
 export default function Dashboard() {
-  const { data: state, isLoading, revalidate } = usePromise(getState);
+  const { data, isLoading, revalidate } = usePromise(async () => {
+    const [state, collector] = await Promise.all([getState(), getCollectorSummary()]);
+    return { state, collector };
+  });
+  const state = data?.state;
+  const collector = data?.collector;
   const now = new Date();
   const weekStart = new Date(now);
   weekStart.setDate(now.getDate() - 6);
@@ -22,14 +28,25 @@ export default function Dashboard() {
       navigationTitle="Writing Dashboard"
       markdown={
         today && week
-          ? dashboardMarkdown(today, week, activeTodayMilliseconds, activeWeekMilliseconds, state?.activeSession?.kind)
+          ? dashboardMarkdown(
+              today,
+              week,
+              activeTodayMilliseconds,
+              activeWeekMilliseconds,
+              state?.activeSession?.kind,
+              usageForDay(collector),
+              collector?.keyboardByDay[dayKey(now)],
+            )
           : "# Writing Signal"
       }
       metadata={
         <Detail.Metadata>
           <Detail.Metadata.Label title="Data" text="Local encrypted Raycast storage" />
           <Detail.Metadata.Label title="Selected text" text="Never retained" />
-          <Detail.Metadata.Label title="Sync" text="Local-only in this prototype" />
+          <Detail.Metadata.Label
+            title="Automatic tracking"
+            text={collector ? "Native companion connected" : "Not connected"}
+          />
           <Detail.Metadata.Label title="Today" text={dayKey(now)} />
         </Detail.Metadata>
       }

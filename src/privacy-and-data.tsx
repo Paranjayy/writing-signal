@@ -17,6 +17,10 @@ const markdown = `# Privacy & Data
 ## Storage and future sync
 
 This Raycast prototype uses Raycast's local encrypted storage. There is intentionally no “unencrypted” toggle here because the API owns its secure local database. Future iOS, Android, web, Windows, and Linux clients should use an end-to-end encrypted vault with an optional passphrase; sync is not implemented yet.
+
+## Native collector bridge
+
+The optional macOS collector writes an owner-only local summary containing app names, broad categories, durations, and—if explicitly enabled—keyboard aggregates. It does not write text. This narrow summary lets Raycast display automatic Screen Time; a passphrase-encrypted detailed vault is the next companion milestone.
 `;
 
 export default function PrivacyAndData() {

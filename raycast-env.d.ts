@@ -31,6 +31,10 @@ declare namespace Preferences {
   export type PurgeClipboard = ExtensionPreferences & {}
   /** Preferences accessible in the `privacy-and-data` command */
   export type PrivacyAndData = ExtensionPreferences & {}
+  /** Preferences accessible in the `screen-time` command */
+  export type ScreenTime = ExtensionPreferences & {}
+  /** Preferences accessible in the `collector-status` command */
+  export type CollectorStatus = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -52,5 +56,9 @@ declare namespace Arguments {
   export type PurgeClipboard = {}
   /** Arguments passed to the `privacy-and-data` command */
   export type PrivacyAndData = {}
+  /** Arguments passed to the `screen-time` command */
+  export type ScreenTime = {}
+  /** Arguments passed to the `collector-status` command */
+  export type CollectorStatus = {}
 }
 
