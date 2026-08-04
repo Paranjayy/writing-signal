@@ -101,6 +101,14 @@
         "description": "See the native companion's privacy settings and live status.",
         "mode": "view",
         "keywords": ["keyboard", "permissions", "native"]
+      },
+      {
+        "name": "activity-menu-bar",
+        "title": "Activity at a Glance",
+        "description": "Show current activity and today's local screen time in the menu bar.",
+        "mode": "menu-bar",
+        "interval": "1m",
+        "keywords": ["menubar", "current app", "time"]
       }
   ]
 }

@@ -8,6 +8,7 @@ A local-first Raycast prototype for understanding writing effort without retaini
 - Backfill time in a couple of keystrokes when you only realize later that it disappeared.
 - Capture selected text from the frontmost app. The extension stores only aggregate deltas (words, characters, and token types), never the selected text.
 - View daily and weekly time totals, activity modes, and simple token categories.
+- Keep a glanceable current-app and daily-total readout in the Raycast menu bar.
 - Inspect the current clipboard's shape and explicitly clear the clipboard.
 
 ## Important boundaries

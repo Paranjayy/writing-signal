@@ -35,6 +35,8 @@ declare namespace Preferences {
   export type ScreenTime = ExtensionPreferences & {}
   /** Preferences accessible in the `collector-status` command */
   export type CollectorStatus = ExtensionPreferences & {}
+  /** Preferences accessible in the `activity-menu-bar` command */
+  export type ActivityMenuBar = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -60,5 +62,7 @@ declare namespace Arguments {
   export type ScreenTime = {}
   /** Arguments passed to the `collector-status` command */
   export type CollectorStatus = {}
+  /** Arguments passed to the `activity-menu-bar` command */
+  export type ActivityMenuBar = {}
 }
 
