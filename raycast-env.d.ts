@@ -61,6 +61,8 @@ declare namespace Preferences {
   export type KeyboardActivity = ExtensionPreferences & {}
   /** Preferences accessible in the `activity-history` command */
   export type ActivityHistory = ExtensionPreferences & {}
+  /** Preferences accessible in the `collector-settings` command */
+  export type CollectorSettings = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -112,5 +114,7 @@ declare namespace Arguments {
   export type KeyboardActivity = {}
   /** Arguments passed to the `activity-history` command */
   export type ActivityHistory = {}
+  /** Arguments passed to the `collector-settings` command */
+  export type CollectorSettings = {}
 }
 

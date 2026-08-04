@@ -45,6 +45,7 @@ struct RuleFile: Codable {
   var schemaVersion = 1
   var categories: [String: ActivityCategory] = [:]
   var excludedBundleIdentifiers: [String]?
+  var idleAfterSeconds: TimeInterval?
 }
 
 struct CollectorSummary: Codable {
@@ -143,6 +144,15 @@ final class RuleStore {
           rules.schemaVersion == 1 else { return false }
     return rules.excludedBundleIdentifiers?.contains(bundleIdentifier) ?? false
   }
+
+  func idleAfterSeconds() -> TimeInterval? {
+    guard let data = try? Data(contentsOf: url),
+          let rules = try? decoder.decode(RuleFile.self, from: data),
+          rules.schemaVersion == 1,
+          let threshold = rules.idleAfterSeconds,
+          threshold >= 15 else { return nil }
+    return threshold
+  }
 }
 
 final class Tracker: NSObject {
@@ -217,7 +227,8 @@ final class Tracker: NSObject {
   private func isIdle() -> Bool {
     // `UInt32.max` is Core Graphics' kCGAnyInputEventType; Swift does not expose a named enum case.
     let anyInputEvent = CGEventType(rawValue: UInt32.max)!
-    return CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: anyInputEvent) > summary.settings.idleAfterSeconds
+    let idleAfter = ruleStore.idleAfterSeconds() ?? summary.settings.idleAfterSeconds
+    return CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: anyInputEvent) > idleAfter
   }
 
   private func add(seconds: TimeInterval, for app: ApplicationSnapshot, on date: Date) {

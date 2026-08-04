@@ -25,6 +25,11 @@ export default function CollectorStatus() {
             icon={Icon.Keyboard}
             onAction={() => launchCommand({ name: "keyboard-activity", type: LaunchType.UserInitiated })}
           />
+          <Action
+            title="Automatic Tracking Settings"
+            icon={Icon.Gear}
+            onAction={() => launchCommand({ name: "collector-settings", type: LaunchType.UserInitiated })}
+          />
         </ActionPanel>
       }
     />

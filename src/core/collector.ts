@@ -45,6 +45,7 @@ type RuleFile = {
   schemaVersion: 1;
   categories: Record<string, CollectorCategory>;
   excludedBundleIdentifiers?: string[];
+  idleAfterSeconds?: number;
 };
 
 function collectorDirectory(): string {
@@ -79,6 +80,10 @@ async function getRuleFile(): Promise<RuleFile> {
           schemaVersion: 1,
           categories: parsed.categories ?? {},
           excludedBundleIdentifiers: parsed.excludedBundleIdentifiers ?? [],
+          idleAfterSeconds:
+            typeof parsed.idleAfterSeconds === "number" && Number.isFinite(parsed.idleAfterSeconds)
+              ? Math.max(15, Math.floor(parsed.idleAfterSeconds))
+              : undefined,
         }
       : { schemaVersion: 1, categories: {}, excludedBundleIdentifiers: [] };
   } catch {
@@ -126,6 +131,17 @@ export async function includeCollectorApp(bundleIdentifier: string): Promise<voi
   rules.excludedBundleIdentifiers = (rules.excludedBundleIdentifiers ?? []).filter(
     (entry) => entry !== bundleIdentifier,
   );
+  await writeRules(rules);
+}
+
+export async function getCollectorIdleAfterSeconds(): Promise<number | undefined> {
+  return (await getRuleFile()).idleAfterSeconds;
+}
+
+export async function setCollectorIdleAfterSeconds(seconds: number): Promise<void> {
+  if (!Number.isFinite(seconds) || seconds < 15) throw new Error("Idle threshold must be at least 15 seconds");
+  const rules = await getRuleFile();
+  rules.idleAfterSeconds = Math.floor(seconds);
   await writeRules(rules);
 }
 

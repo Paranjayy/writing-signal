@@ -194,6 +194,13 @@
         "description": "Review the last 14 days of local foreground-app time.",
         "mode": "view",
         "keywords": ["weekly", "screen time", "recap"]
+      },
+      {
+        "name": "collector-settings",
+        "title": "Automatic Tracking Settings",
+        "description": "Choose when idle time stops counting toward app activity.",
+        "mode": "view",
+        "keywords": ["idle", "accuracy", "screen time"]
       }
   ]
 }

@@ -47,6 +47,10 @@ Use Raycast’s **Manage App Rules** command to override a bundle identifier’s
 
 Use **Manage Privacy Exclusions** for apps that must never be recorded at all. An excluded app contributes no app time or keyboard aggregates and is not shown as the current app.
 
+## Idle threshold
+
+Use Raycast’s **Automatic Tracking Settings** command to choose how long no input must occur before the collector stops attributing foreground-app time. The setting is local, affects only future time, and is applied immediately without restarting the companion.
+
 ## Limits of this first companion
 
 - It tracks while the process is running; a signed app plus user-approved launch agent is the next packaging step.
