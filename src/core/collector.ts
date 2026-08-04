@@ -13,6 +13,12 @@ export type CollectorApplication = {
   seconds: number;
 };
 
+export type CollectorSegment = {
+  application: { name: string; bundleIdentifier: string; category: CollectorCategory };
+  startedAt: string;
+  endedAt: string;
+};
+
 export type CollectorKeyboardSummary = {
   keyDowns: number;
   printableKeyDowns: number;
@@ -28,7 +34,9 @@ export type CollectorSummary = {
   trackingStartedAt: string;
   settings: { keyboardTrackingEnabled: boolean; idleAfterSeconds: number };
   activeApplication?: { name: string; bundleIdentifier: string; category: CollectorCategory };
+  currentSegmentStartedAt?: string;
   days: Record<string, Record<string, CollectorApplication>>;
+  segmentsByDay?: Record<string, CollectorSegment[]>;
   keyboardByDay: Record<string, CollectorKeyboardSummary>;
   keyboardByDayAndApplication?: Record<string, Record<string, CollectorKeyboardSummary>>;
 };
@@ -163,4 +171,22 @@ export function keyboardForAppDay(
   date = new Date(),
 ): CollectorKeyboardSummary | undefined {
   return summary?.keyboardByDayAndApplication?.[localDayKey(date)]?.[bundleIdentifier];
+}
+
+export function segmentsForDay(summary: CollectorSummary | undefined, date = new Date()): CollectorSegment[] {
+  if (!summary) return [];
+  const key = localDayKey(date);
+  const segments = [...(summary.segmentsByDay?.[key] ?? [])];
+  if (
+    summary.activeApplication &&
+    summary.currentSegmentStartedAt &&
+    localDayKey(new Date(summary.currentSegmentStartedAt)) === key
+  ) {
+    segments.push({
+      application: summary.activeApplication,
+      startedAt: summary.currentSegmentStartedAt,
+      endedAt: new Date().toISOString(),
+    });
+  }
+  return segments.sort((left, right) => new Date(right.startedAt).getTime() - new Date(left.startedAt).getTime());
 }

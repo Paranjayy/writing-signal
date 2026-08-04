@@ -49,6 +49,8 @@ declare namespace Preferences {
   export type BrowserRules = ExtensionPreferences & {}
   /** Preferences accessible in the `browser-exclusions` command */
   export type BrowserExclusions = ExtensionPreferences & {}
+  /** Preferences accessible in the `activity-timeline` command */
+  export type ActivityTimeline = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -88,5 +90,7 @@ declare namespace Arguments {
   export type BrowserRules = {}
   /** Arguments passed to the `browser-exclusions` command */
   export type BrowserExclusions = {}
+  /** Arguments passed to the `activity-timeline` command */
+  export type ActivityTimeline = {}
 }
 

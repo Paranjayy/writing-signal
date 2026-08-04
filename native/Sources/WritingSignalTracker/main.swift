@@ -22,6 +22,12 @@ struct ApplicationUsage: Codable {
   var seconds: TimeInterval
 }
 
+struct ActivitySegment: Codable {
+  var application: ApplicationSnapshot
+  var startedAt: Date
+  var endedAt: Date
+}
+
 struct KeyboardSummary: Codable {
   var keyDowns = 0
   var printableKeyDowns = 0
@@ -48,7 +54,9 @@ struct CollectorSummary: Codable {
   var trackingStartedAt = Date()
   var settings: CollectorSettings
   var activeApplication: ApplicationSnapshot?
+  var currentSegmentStartedAt: Date?
   var days: [String: [String: ApplicationUsage]] = [:]
+  var segmentsByDay: [String: [ActivitySegment]]?
   var keyboardByDay: [String: KeyboardSummary] = [:]
   var keyboardByDayAndApplication: [String: [String: KeyboardSummary]]?
 }
@@ -152,6 +160,8 @@ final class Tracker: NSObject {
     self.store = store
     self.summary = store.load(settings: settings)
     self.keyboardTracking = settings.keyboardTrackingEnabled
+    self.summary.activeApplication = nil
+    self.summary.currentSegmentStartedAt = nil
     super.init()
   }
 
@@ -181,13 +191,24 @@ final class Tracker: NSObject {
     let elapsed = now.timeIntervalSince(lastTick)
     defer { lastTick = now }
 
-    if let previous = summary.activeApplication, elapsed > 0, !isIdle() {
+    let idle = isIdle()
+    let nextApplication: ApplicationSnapshot?
+    if let app = activeApplication(), !ruleStore.isExcluded(app.bundleIdentifier), !idle {
+      nextApplication = app
+    } else {
+      nextApplication = nil
+    }
+
+    if let previous = summary.activeApplication, elapsed > 0, !idle {
       add(seconds: elapsed, for: previous, on: lastTick)
     }
-    if let app = activeApplication(), !ruleStore.isExcluded(app.bundleIdentifier) {
-      summary.activeApplication = app
-    } else {
-      summary.activeApplication = nil
+
+    if summary.activeApplication != nextApplication {
+      if let previous = summary.activeApplication, let startedAt = summary.currentSegmentStartedAt {
+        closeSegment(for: previous, startedAt: startedAt, endedAt: idle ? lastTick : now)
+      }
+      summary.activeApplication = nextApplication
+      summary.currentSegmentStartedAt = nextApplication == nil ? nil : now
     }
     summary.generatedAt = now
     store.save(summary)
@@ -208,6 +229,16 @@ final class Tracker: NSObject {
     usage.seconds += seconds
     apps[app.bundleIdentifier] = usage
     summary.days[key] = apps
+  }
+
+  private func closeSegment(for application: ApplicationSnapshot, startedAt: Date, endedAt: Date) {
+    guard endedAt > startedAt else { return }
+    let key = dayKey(startedAt)
+    var segments = summary.segmentsByDay ?? [:]
+    segments[key, default: []].append(ActivitySegment(application: application, startedAt: startedAt, endedAt: endedAt))
+    let retentionDate = Calendar.current.date(byAdding: .day, value: -14, to: Date()) ?? Date()
+    segments = segments.filter { $0.key >= dayKey(retentionDate) }
+    summary.segmentsByDay = segments
   }
 
   private func updateKeyboard(_ update: (inout KeyboardSummary) -> Void) {

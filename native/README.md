@@ -11,6 +11,8 @@ swift run writing-signal-tracker
 
 Default mode records the active app, app bundle ID, a broad activity category, and duration. It does not record window titles, websites, screenshots, or typed content.
 
+The collector keeps a bounded 14-day local foreground-app timeline so Raycast can show the shape of a day. Each segment contains only app name, category, start time, and end time.
+
 ## Persistent background tracking
 
 After building, install a user LaunchAgent explicitly:

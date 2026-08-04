@@ -152,6 +152,13 @@
         "description": "Choose hostnames browser tracking must never record.",
         "mode": "view",
         "keywords": ["domains", "private", "exclude"]
+      },
+      {
+        "name": "activity-timeline",
+        "title": "Open Activity Timeline",
+        "description": "See local foreground-app segments from today.",
+        "mode": "view",
+        "keywords": ["timeline", "history", "today"]
       }
   ]
 }
