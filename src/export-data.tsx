@@ -1,5 +1,6 @@
-import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand, showHUD } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, showHUD } from "@raycast/api";
 import { writeExportSnapshot } from "./core/export";
+import ExportEncryptedData from "./export-encrypted-data";
 
 const markdown = `# Export Local Data
 
@@ -34,11 +35,7 @@ export default function ExportData() {
       actions={
         <ActionPanel>
           <Action title="Create Local JSON Export" icon={Icon.Download} onAction={exportSnapshot} />
-          <Action
-            title="Create Encrypted Export"
-            icon={Icon.Lock}
-            onAction={() => launchCommand({ name: "export-encrypted-data", type: LaunchType.UserInitiated })}
-          />
+          <Action.Push title="Create Encrypted Export" icon={Icon.Lock} target={<ExportEncryptedData />} />
         </ActionPanel>
       }
     />

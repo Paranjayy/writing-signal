@@ -27,6 +27,12 @@ export type CollectorKeyboardSummary = {
   estimatedWords: number;
 };
 
+export type CollectorLiveTyping = {
+  keysPerMinute: number;
+  estimatedWordsPerMinute: number;
+  measuredAt: string;
+};
+
 export type CollectorSummary = {
   schemaVersion: number;
   generatedAt: string;
@@ -39,6 +45,7 @@ export type CollectorSummary = {
   segmentsByDay?: Record<string, CollectorSegment[]>;
   keyboardByDay: Record<string, CollectorKeyboardSummary>;
   keyboardByDayAndApplication?: Record<string, Record<string, CollectorKeyboardSummary>>;
+  liveTyping?: CollectorLiveTyping;
 };
 
 const COLLECTOR_STALE_AFTER_MILLISECONDS = 15_000;

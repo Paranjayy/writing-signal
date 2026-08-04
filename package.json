@@ -32,8 +32,8 @@
   "commands": [
       {
         "name": "dashboard",
-        "title": "Open Writing Dashboard",
-        "description": "See local writing-time, text-pattern, and clipboard summaries.",
+        "title": "Open Writing Signal",
+        "description": "Your local command center for writing, time, typing, browser, and clipboard patterns.",
         "mode": "view"
       },
       {
@@ -42,19 +42,6 @@
         "description": "Measure the selected text without storing its contents.",
         "mode": "no-view",
         "keywords": ["selected text", "measure"]
-      },
-      {
-        "name": "start-writing-session",
-        "title": "Start Writing Session",
-        "description": "Start an intentional local writing-time session.",
-        "mode": "no-view"
-      },
-      {
-        "name": "start-activity-timer",
-        "title": "Start Activity Timer",
-        "description": "Track writing, creating, focused work, or consuming.",
-        "mode": "view",
-        "keywords": ["time", "focus", "create", "watch"]
       },
       {
         "name": "start-focus-block",
@@ -78,19 +65,6 @@
         "mode": "no-view"
       },
       {
-        "name": "log-activity",
-        "title": "Log Past Activity",
-        "description": "Add time that already passed, without storing what you did.",
-        "mode": "view",
-        "keywords": ["backfill", "forgot", "time"]
-      },
-      {
-        "name": "clipboard-insights",
-        "title": "Open Clipboard Insights",
-        "description": "Inspect and classify the current clipboard without saving its contents.",
-        "mode": "view"
-      },
-      {
         "name": "clipboard-pulse",
         "title": "Enable Clipboard Pattern Tracking",
         "description": "Track local clipboard text patterns without storing clipboard content.",
@@ -99,45 +73,10 @@
         "keywords": ["clipboard", "patterns", "aggregate"]
       },
       {
-        "name": "clipboard-patterns",
-        "title": "Open Clipboard Patterns",
-        "description": "See local aggregate clipboard copy patterns from the enabled tracker.",
-        "mode": "view",
-        "keywords": ["clipboard", "copies", "stats"]
-      },
-      {
         "name": "purge-clipboard",
         "title": "Purge Clipboard",
         "description": "Clear the current macOS clipboard after confirmation.",
         "mode": "no-view"
-      },
-      {
-        "name": "privacy-and-data",
-        "title": "Open Privacy & Data",
-        "description": "Review local data handling or erase all Writing Signal data.",
-        "mode": "view",
-        "keywords": ["security", "delete", "encryption"]
-      },
-      {
-        "name": "screen-time",
-        "title": "Open Automatic Screen Time",
-        "description": "See app-level time from the local native companion.",
-        "mode": "view",
-        "keywords": ["apps", "usage", "activity"]
-      },
-      {
-        "name": "collector-status",
-        "title": "Open Collector Status",
-        "description": "See the native companion's privacy settings and live status.",
-        "mode": "view",
-        "keywords": ["keyboard", "permissions", "native"]
-      },
-      {
-        "name": "collector-setup",
-        "title": "Set up Automatic Tracking",
-        "description": "Build and install the local native collector with clear consent choices.",
-        "mode": "view",
-        "keywords": ["install", "screen time", "keyboard"]
       },
       {
         "name": "activity-menu-bar",
@@ -148,82 +87,12 @@
         "keywords": ["menubar", "current app", "time"]
       },
       {
-        "name": "app-rules",
-        "title": "Manage App Rules",
-        "description": "Override automatic categories for the apps you use.",
-        "mode": "view",
-        "keywords": ["category", "apps", "projects"]
-      },
-      {
-        "name": "privacy-exclusions",
-        "title": "Manage Privacy Exclusions",
-        "description": "Choose apps the native collector must never record.",
-        "mode": "view",
-        "keywords": ["private", "ignore", "exclude"]
-      },
-      {
         "name": "browser-pulse",
         "title": "Enable Browser Activity Tracking",
         "description": "Track active website hostnames locally, with no URL paths or page content.",
         "mode": "no-view",
         "interval": "1m",
         "keywords": ["websites", "domains", "browser"]
-      },
-      {
-        "name": "browser-time",
-        "title": "Open Browser Time",
-        "description": "See local time by website hostname from the enabled browser tracker.",
-        "mode": "view",
-        "keywords": ["websites", "domains", "browser"]
-      },
-      {
-        "name": "browser-rules",
-        "title": "Manage Browser Rules",
-        "description": "Override the category assigned to browser hostnames.",
-        "mode": "view",
-        "keywords": ["domains", "category", "websites"]
-      },
-      {
-        "name": "browser-exclusions",
-        "title": "Manage Browser Exclusions",
-        "description": "Choose hostnames browser tracking must never record.",
-        "mode": "view",
-        "keywords": ["domains", "private", "exclude"]
-      },
-      {
-        "name": "activity-timeline",
-        "title": "Open Activity Timeline",
-        "description": "See local foreground-app segments from today.",
-        "mode": "view",
-        "keywords": ["timeline", "history", "today"]
-      },
-      {
-        "name": "insights",
-        "title": "Open Personal Activity Insights",
-        "description": "See a local summary of writing, creating, consuming, apps, and browser activity.",
-        "mode": "view",
-        "keywords": ["summary", "balance", "weekly"]
-      },
-      {
-        "name": "weekly-review",
-        "title": "Open Weekly Review",
-        "description": "See seven days of local app time, writing, intentional activity, and keyboard estimates.",
-        "mode": "view",
-        "keywords": ["weekly", "review", "balance"]
-      },
-      {
-        "name": "goals",
-        "title": "Set Daily Goals",
-        "description": "Set optional daily writing, focused-work, and creating targets.",
-        "mode": "view",
-        "keywords": ["target", "progress", "writing"]
-      },
-      {
-        "name": "daily-review-settings",
-        "title": "Daily Check-In Settings",
-        "description": "Choose an optional local daily writing and time-balance summary.",
-        "mode": "view",
-        "keywords": ["review", "reminder", "daily"]
       },
       {
         "name": "daily-review-pulse",
@@ -234,53 +103,11 @@
         "keywords": ["review", "reminder", "daily"]
       },
       {
-        "name": "export-data",
-        "title": "Export Local Data",
-        "description": "Write a private local JSON snapshot of your aggregates and settings.",
+        "name": "live-typing",
+        "title": "Live Typing Pace",
+        "description": "See local rolling WPM and key rate; never captures text.",
         "mode": "view",
-        "keywords": ["backup", "portable", "privacy"]
-      },
-      {
-        "name": "export-encrypted-data",
-        "title": "Create Encrypted Export",
-        "description": "Create a passphrase-protected local backup of your aggregates and settings.",
-        "mode": "view",
-        "keywords": ["backup", "encryption", "passphrase"]
-      },
-      {
-        "name": "import-data",
-        "title": "Import Local Data",
-        "description": "Merge a plain or encrypted Writing Signal backup into local Raycast aggregates.",
-        "mode": "view",
-        "keywords": ["restore", "backup", "migration"]
-      },
-      {
-        "name": "keyboard-activity",
-        "title": "Open Keyboard Activity",
-        "description": "See optional local keyboard aggregates by foreground app.",
-        "mode": "view",
-        "keywords": ["typing", "words", "keys"]
-      },
-      {
-        "name": "activity-history",
-        "title": "Open Activity History",
-        "description": "Review the last 14 days of local foreground-app time.",
-        "mode": "view",
-        "keywords": ["weekly", "screen time", "recap"]
-      },
-      {
-        "name": "collector-settings",
-        "title": "Automatic Tracking Settings",
-        "description": "Choose when idle time stops counting toward app activity.",
-        "mode": "view",
-        "keywords": ["idle", "accuracy", "screen time"]
-      },
-      {
-        "name": "tracking-pause",
-        "title": "Pause Automatic Tracking",
-        "description": "Temporarily stop automatic app and keyboard aggregate collection.",
-        "mode": "view",
-        "keywords": ["privacy", "pause", "stop"]
+        "keywords": ["wpm", "typing", "live", "keys"]
       }
   ]
 }

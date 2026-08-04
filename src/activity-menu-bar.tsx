@@ -56,6 +56,11 @@ export default function ActivityMenuBar() {
           }
         />
         <MenuBarExtra.Item title={`Today: ${formatDuration(total)}`} />
+        {active && summary?.settings.keyboardTrackingEnabled && (
+          <MenuBarExtra.Item
+            title={`Live typing: ${summary.liveTyping?.estimatedWordsPerMinute ?? 0} est. WPM · ${summary.liveTyping?.keysPerMinute ?? 0} keys/min`}
+          />
+        )}
       </MenuBarExtra.Section>
       {pausedUntil && (
         <MenuBarExtra.Section>
@@ -113,29 +118,14 @@ export default function ActivityMenuBar() {
       )}
       <MenuBarExtra.Section>
         <MenuBarExtra.Item
-          title="Open Automatic Screen Time"
-          icon={Icon.BarChart}
-          onAction={() => launchCommand({ name: "screen-time", type: LaunchType.UserInitiated })}
-        />
-        <MenuBarExtra.Item
-          title="Open Dashboard"
+          title="Open Writing Signal"
           icon={Icon.Window}
           onAction={() => launchCommand({ name: "dashboard", type: LaunchType.UserInitiated })}
-        />
-        <MenuBarExtra.Item
-          title="Set Daily Goals"
-          icon={Icon.BullsEye}
-          onAction={() => launchCommand({ name: "goals", type: LaunchType.UserInitiated })}
         />
         <MenuBarExtra.Item
           title="Start Focus Block"
           icon={Icon.Clock}
           onAction={() => launchCommand({ name: "start-focus-block", type: LaunchType.UserInitiated })}
-        />
-        <MenuBarExtra.Item
-          title="Daily Check-in Settings"
-          icon={Icon.Bell}
-          onAction={() => launchCommand({ name: "daily-review-settings", type: LaunchType.UserInitiated })}
         />
       </MenuBarExtra.Section>
     </MenuBarExtra>

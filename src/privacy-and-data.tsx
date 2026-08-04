@@ -1,19 +1,12 @@
-import {
-  Action,
-  ActionPanel,
-  Alert,
-  Detail,
-  Icon,
-  LaunchType,
-  confirmAlert,
-  launchCommand,
-  showHUD,
-} from "@raycast/api";
+import { Action, ActionPanel, Alert, Detail, Icon, confirmAlert, showHUD } from "@raycast/api";
 import { clearCollectorData } from "./core/collector";
 import { clearBrowserData } from "./core/browser";
 import { clearClipboardHistory } from "./core/clipboard-history";
 import { clearGoals } from "./core/goals";
 import { clearAllData } from "./core/storage";
+import ExportData from "./export-data";
+import ExportEncryptedData from "./export-encrypted-data";
+import ImportData from "./import-data";
 
 const markdown = `# Privacy & Data
 
@@ -66,21 +59,9 @@ export default function PrivacyAndData() {
       markdown={markdown}
       actions={
         <ActionPanel>
-          <Action
-            title="Export Local Data"
-            icon={Icon.Download}
-            onAction={() => launchCommand({ name: "export-data", type: LaunchType.UserInitiated })}
-          />
-          <Action
-            title="Create Encrypted Export"
-            icon={Icon.Lock}
-            onAction={() => launchCommand({ name: "export-encrypted-data", type: LaunchType.UserInitiated })}
-          />
-          <Action
-            title="Import Local Data"
-            icon={Icon.Upload}
-            onAction={() => launchCommand({ name: "import-data", type: LaunchType.UserInitiated })}
-          />
+          <Action.Push title="Export Local Data" icon={Icon.Download} target={<ExportData />} />
+          <Action.Push title="Create Encrypted Export" icon={Icon.Lock} target={<ExportEncryptedData />} />
+          <Action.Push title="Import Local Data" icon={Icon.Upload} target={<ImportData />} />
           <Action title="Erase All Local Data" icon={Icon.Trash} style={Action.Style.Destructive} onAction={erase} />
         </ActionPanel>
       }

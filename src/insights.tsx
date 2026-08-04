@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getBrowserUsage } from "./core/browser";
 import { getCollectorSummary } from "./core/collector";
@@ -6,6 +6,7 @@ import { getGoals } from "./core/goals";
 import { buildInsights } from "./core/insights";
 import { formatDuration, formatNumber } from "./core/presentation";
 import { dayKey, getState } from "./core/storage";
+import WeeklyReview from "./weekly-review";
 
 function percent(part: number, total: number): string {
   return total > 0 ? `${Math.round((part / total) * 100)}%` : "—";
@@ -74,11 +75,7 @@ ${data.insight.topDomain ? `Most-used hostname today: **${data.insight.topDomain
       actions={
         <ActionPanel>
           <Action title="Refresh Insights" icon={Icon.ArrowClockwise} onAction={revalidate} />
-          <Action
-            title="Open Weekly Review"
-            icon={Icon.Calendar}
-            onAction={() => launchCommand({ name: "weekly-review", type: LaunchType.UserInitiated })}
-          />
+          <Action.Push title="Open Weekly Review" icon={Icon.Calendar} target={<WeeklyReview />} />
         </ActionPanel>
       }
     />

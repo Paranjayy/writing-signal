@@ -36,6 +36,12 @@ struct KeyboardSummary: Codable {
   var estimatedWords = 0
 }
 
+struct LiveTypingSummary: Codable {
+  var keysPerMinute = 0
+  var estimatedWordsPerMinute = 0
+  var measuredAt = Date()
+}
+
 struct CollectorSettings: Codable {
   var keyboardTrackingEnabled: Bool
   var idleAfterSeconds: TimeInterval
@@ -62,6 +68,7 @@ struct CollectorSummary: Codable {
   var segmentsByDay: [String: [ActivitySegment]]?
   var keyboardByDay: [String: KeyboardSummary] = [:]
   var keyboardByDayAndApplication: [String: [String: KeyboardSummary]]?
+  var liveTyping: LiveTypingSummary?
 }
 
 private let writingBundles: Set<String> = [
@@ -185,6 +192,8 @@ final class Tracker: NSObject {
   private var eventTap: CFMachPort?
   private var eventSource: CFRunLoopSource?
   private var currentlyInsideWord = false
+  private var recentKeyTimes: [Date] = []
+  private var recentWordTimes: [Date] = []
 
   init(store: SummaryStore, settings: CollectorSettings) {
     self.store = store
@@ -242,6 +251,7 @@ final class Tracker: NSObject {
       summary.currentSegmentStartedAt = nextApplication == nil ? nil : now
     }
     pruneExpiredHistory()
+    refreshLiveTyping(at: now)
     summary.generatedAt = now
     store.save(summary)
   }
@@ -300,6 +310,17 @@ final class Tracker: NSObject {
     summary.keyboardByDayAndApplication = perDay
   }
 
+  private func refreshLiveTyping(at now: Date) {
+    let cutoff = now.addingTimeInterval(-60)
+    recentKeyTimes = recentKeyTimes.filter { $0 >= cutoff }
+    recentWordTimes = recentWordTimes.filter { $0 >= cutoff }
+    summary.liveTyping = LiveTypingSummary(
+      keysPerMinute: recentKeyTimes.count,
+      estimatedWordsPerMinute: recentWordTimes.count,
+      measuredAt: now
+    )
+  }
+
   private func installKeyboardTap() {
     guard CGPreflightListenEventAccess() || CGRequestListenEventAccess() else {
       fputs("Keyboard tracking needs macOS Input Monitoring permission. Continuing with app-only tracking.\n", stderr)
@@ -324,8 +345,10 @@ final class Tracker: NSObject {
   }
 
   private func recordKey(_ event: CGEvent) {
+    guard summary.activeApplication != nil else { return }
     let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
     let wasInsideWord = currentlyInsideWord
+    let completedWord = (keyCode == 49 || keyCode == 36 || keyCode == 48) && wasInsideWord
     let update: (inout KeyboardSummary) -> Void
     switch keyCode {
     case 49, 36, 48: // space, return, tab
@@ -356,6 +379,10 @@ final class Tracker: NSObject {
       }
     }
     updateKeyboard(update)
+    let now = Date()
+    recentKeyTimes.append(now)
+    if completedWord { recentWordTimes.append(now) }
+    refreshLiveTyping(at: now)
   }
 }
 

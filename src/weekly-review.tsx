@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import {
   CollectorApplication,
@@ -9,6 +9,8 @@ import {
 } from "./core/collector";
 import { formatDuration, formatNumber } from "./core/presentation";
 import { getState } from "./core/storage";
+import ActivityHistory from "./activity-history";
+import KeyboardActivity from "./keyboard-activity";
 
 type CategoryTotals = Record<CollectorCategory, number>;
 
@@ -87,16 +89,8 @@ ${data
       actions={
         <ActionPanel>
           <Action title="Refresh Weekly Review" icon={Icon.ArrowClockwise} onAction={revalidate} />
-          <Action
-            title="Open Activity History"
-            icon={Icon.Calendar}
-            onAction={() => launchCommand({ name: "activity-history", type: LaunchType.UserInitiated })}
-          />
-          <Action
-            title="Open Keyboard Activity"
-            icon={Icon.Keyboard}
-            onAction={() => launchCommand({ name: "keyboard-activity", type: LaunchType.UserInitiated })}
-          />
+          <Action.Push title="Open Activity History" icon={Icon.Calendar} target={<ActivityHistory />} />
+          <Action.Push title="Open Keyboard Activity" icon={Icon.Keyboard} target={<KeyboardActivity />} />
         </ActionPanel>
       }
     />

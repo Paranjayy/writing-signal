@@ -1,7 +1,11 @@
-import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getCollectorPausedUntil, getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { formatDuration } from "./core/presentation";
+import CollectorSettings from "./collector-settings";
+import CollectorSetup from "./collector-setup";
+import KeyboardActivity from "./keyboard-activity";
+import TrackingPause from "./tracking-pause";
 
 export default function CollectorStatus() {
   const { data, isLoading, revalidate } = usePromise(async () => {
@@ -26,26 +30,10 @@ export default function CollectorStatus() {
       actions={
         <ActionPanel>
           <Action title="Refresh Status" icon={Icon.ArrowClockwise} onAction={revalidate} />
-          <Action
-            title="Open Keyboard Activity"
-            icon={Icon.Keyboard}
-            onAction={() => launchCommand({ name: "keyboard-activity", type: LaunchType.UserInitiated })}
-          />
-          <Action
-            title="Automatic Tracking Settings"
-            icon={Icon.Gear}
-            onAction={() => launchCommand({ name: "collector-settings", type: LaunchType.UserInitiated })}
-          />
-          <Action
-            title="Set up Automatic Tracking"
-            icon={Icon.WrenchScrewdriver}
-            onAction={() => launchCommand({ name: "collector-setup", type: LaunchType.UserInitiated })}
-          />
-          <Action
-            title="Pause Automatic Tracking"
-            icon={Icon.Pause}
-            onAction={() => launchCommand({ name: "tracking-pause", type: LaunchType.UserInitiated })}
-          />
+          <Action.Push title="Open Keyboard Activity" icon={Icon.Keyboard} target={<KeyboardActivity />} />
+          <Action.Push title="Automatic Tracking Settings" icon={Icon.Gear} target={<CollectorSettings />} />
+          <Action.Push title="Set up Automatic Tracking" icon={Icon.WrenchScrewdriver} target={<CollectorSetup />} />
+          <Action.Push title="Pause Automatic Tracking" icon={Icon.Pause} target={<TrackingPause />} />
         </ActionPanel>
       }
     />

@@ -1,8 +1,10 @@
-import { Action, ActionPanel, Icon, LaunchType, List, launchCommand } from "@raycast/api";
+import { Action, ActionPanel, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { useState } from "react";
 import { CollectorApplication, contextSwitchesForDay, getCollectorSummary, localDayKey } from "./core/collector";
 import { formatDuration, formatNumber } from "./core/presentation";
+import ActivityTimeline from "./activity-timeline";
+import ScreenTime from "./screen-time";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 
@@ -104,16 +106,8 @@ export default function ActivityHistory() {
             actions={
               <ActionPanel>
                 <Action title="Refresh Activity History" icon={Icon.ArrowClockwise} onAction={revalidate} />
-                <Action
-                  title="Open Automatic Screen Time"
-                  icon={Icon.BarChart}
-                  onAction={() => launchCommand({ name: "screen-time", type: LaunchType.UserInitiated })}
-                />
-                <Action
-                  title="Open Today’s Timeline"
-                  icon={Icon.List}
-                  onAction={() => launchCommand({ name: "activity-timeline", type: LaunchType.UserInitiated })}
-                />
+                <Action.Push title="Open Automatic Screen Time" icon={Icon.BarChart} target={<ScreenTime />} />
+                <Action.Push title="Open Today’s Timeline" icon={Icon.List} target={<ActivityTimeline />} />
               </ActionPanel>
             }
           />

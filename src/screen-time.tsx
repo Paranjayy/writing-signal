@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon, LaunchType, List, launchCommand } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import {
   CollectorApplication,
@@ -11,6 +11,7 @@ import { formatDuration } from "./core/presentation";
 import { AppRuleForm } from "./app-rules";
 import { ExcludeAppForm } from "./privacy-exclusions";
 import AppActivityDetail from "./app-activity-detail";
+import KeyboardActivity from "./keyboard-activity";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 const categories = ["writing", "creating", "consuming", "other"] as const;
@@ -113,10 +114,7 @@ export default function ScreenTime() {
           icon={Icon.Keyboard}
           actions={
             <ActionPanel>
-              <Action
-                title="Open Keyboard Activity"
-                onAction={() => launchCommand({ name: "keyboard-activity", type: LaunchType.UserInitiated })}
-              />
+              <Action.Push title="Open Keyboard Activity" target={<KeyboardActivity />} />
             </ActionPanel>
           }
         />
