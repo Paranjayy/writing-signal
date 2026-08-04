@@ -182,6 +182,13 @@
         "keywords": ["backup", "portable", "privacy"]
       },
       {
+        "name": "export-encrypted-data",
+        "title": "Create Encrypted Export",
+        "description": "Create a passphrase-protected local backup of your aggregates and settings.",
+        "mode": "view",
+        "keywords": ["backup", "encryption", "passphrase"]
+      },
+      {
         "name": "keyboard-activity",
         "title": "Open Keyboard Activity",
         "description": "See optional local keyboard aggregates by foreground app.",

@@ -57,6 +57,8 @@ declare namespace Preferences {
   export type Goals = ExtensionPreferences & {}
   /** Preferences accessible in the `export-data` command */
   export type ExportData = ExtensionPreferences & {}
+  /** Preferences accessible in the `export-encrypted-data` command */
+  export type ExportEncryptedData = ExtensionPreferences & {}
   /** Preferences accessible in the `keyboard-activity` command */
   export type KeyboardActivity = ExtensionPreferences & {}
   /** Preferences accessible in the `activity-history` command */
@@ -110,6 +112,8 @@ declare namespace Arguments {
   export type Goals = {}
   /** Arguments passed to the `export-data` command */
   export type ExportData = {}
+  /** Arguments passed to the `export-encrypted-data` command */
+  export type ExportEncryptedData = {}
   /** Arguments passed to the `keyboard-activity` command */
   export type KeyboardActivity = {}
   /** Arguments passed to the `activity-history` command */

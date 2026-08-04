@@ -30,7 +30,7 @@ const markdown = `# Privacy & Data
 
 ## Storage and future sync
 
-This Raycast prototype uses Raycast's local encrypted storage. There is intentionally no “unencrypted” toggle here because the API owns its secure local database. You can make an owner-only plain JSON export for inspection or future migration. It contains aggregates, not raw content, but should still be treated as private. Future iOS, Android, web, Windows, and Linux clients should use an end-to-end encrypted vault with an optional passphrase; sync is not implemented yet.
+This Raycast prototype uses Raycast's local encrypted storage. There is intentionally no “unencrypted” toggle here because the API owns its secure local database. You can make an owner-only plain JSON export for inspection or future migration, or an AES-256-GCM passphrase-encrypted export. Both contain aggregates, not raw content, but should still be treated as private. The export passphrase is never saved. Future iOS, Android, web, Windows, and Linux clients should use an end-to-end encrypted vault with an optional passphrase; sync is not implemented yet.
 
 ## Native collector bridge
 
@@ -60,6 +60,11 @@ export default function PrivacyAndData() {
             title="Export Local Data"
             icon={Icon.Download}
             onAction={() => launchCommand({ name: "export-data", type: LaunchType.UserInitiated })}
+          />
+          <Action
+            title="Create Encrypted Export"
+            icon={Icon.Lock}
+            onAction={() => launchCommand({ name: "export-encrypted-data", type: LaunchType.UserInitiated })}
           />
           <Action title="Erase All Local Data" icon={Icon.Trash} style={Action.Style.Destructive} onAction={erase} />
         </ActionPanel>

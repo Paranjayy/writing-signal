@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon, showHUD } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand, showHUD } from "@raycast/api";
 import { writeExportSnapshot } from "./core/export";
 
 const markdown = `# Export Local Data
@@ -17,6 +17,8 @@ Export a portable JSON snapshot of your local Writing Signal aggregates and sett
 - Raw writing, individual keystrokes, clipboard contents, URL paths, search terms, page content, screenshots, or credentials
 
 The export is written with owner-only file permissions to **Documents/Writing Signal Backups**. It is plain JSON so you can inspect it or use it for a future opt-in migration. Treat it as private because app names and hostname aggregates can still be sensitive.
+
+Want a protected backup instead? Use **Create Encrypted Export** to encrypt this same snapshot with your passphrase. The passphrase is never retained.
 `;
 
 export default function ExportData() {
@@ -32,6 +34,11 @@ export default function ExportData() {
       actions={
         <ActionPanel>
           <Action title="Create Local JSON Export" icon={Icon.Download} onAction={exportSnapshot} />
+          <Action
+            title="Create Encrypted Export"
+            icon={Icon.Lock}
+            onAction={() => launchCommand({ name: "export-encrypted-data", type: LaunchType.UserInitiated })}
+          />
         </ActionPanel>
       }
     />
