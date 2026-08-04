@@ -1,7 +1,7 @@
 import { Action, ActionPanel, Icon, LaunchType, List, launchCommand } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { useState } from "react";
-import { CollectorApplication, getCollectorSummary, localDayKey } from "./core/collector";
+import { CollectorApplication, contextSwitchesForDay, getCollectorSummary, localDayKey } from "./core/collector";
 import { formatDuration, formatNumber } from "./core/presentation";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
@@ -47,7 +47,16 @@ export default function ActivityHistory() {
     const leadingCategory = (Object.entries(totals) as [CollectorApplication["category"], number][]).sort(
       (left, right) => right[1] - left[1],
     )[0];
-    return { date, key, apps, totals, totalSeconds, leadingCategory, keyboard: summary?.keyboardByDay[key] };
+    return {
+      date,
+      key,
+      apps,
+      totals,
+      totalSeconds,
+      leadingCategory,
+      keyboard: summary?.keyboardByDay[key],
+      contextSwitches: contextSwitchesForDay(summary, date),
+    };
   });
 
   if (!isLoading && !summary) {
@@ -89,6 +98,7 @@ export default function ActivityHistory() {
             icon={categoryIcon[day.leadingCategory[0]]}
             accessories={[
               { text: formatDuration(day.totalSeconds * 1_000) },
+              ...(day.contextSwitches > 0 ? [{ text: `${formatNumber(day.contextSwitches)} switches` }] : []),
               ...(day.keyboard ? [{ text: `${formatNumber(day.keyboard.estimatedWords)} est. words` }] : []),
             ]}
             actions={
