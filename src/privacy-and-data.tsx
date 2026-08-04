@@ -1,4 +1,5 @@
 import { Action, ActionPanel, Alert, Detail, Icon, confirmAlert, showHUD } from "@raycast/api";
+import { clearCollectorData } from "./core/collector";
 import { clearAllData } from "./core/storage";
 
 const markdown = `# Privacy & Data
@@ -32,7 +33,7 @@ export default function PrivacyAndData() {
       primaryAction: { title: "Erase Local Data", style: Alert.ActionStyle.Destructive },
     });
     if (!confirmed) return;
-    await clearAllData();
+    await Promise.all([clearAllData(), clearCollectorData()]);
     await showHUD("Writing Signal data erased");
   }
 

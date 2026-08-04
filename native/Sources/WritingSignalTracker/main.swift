@@ -251,6 +251,8 @@ final class Tracker: NSObject {
 struct Arguments {
   var keyboardTracking = false
   var idleAfterSeconds: TimeInterval = 120
+  var install = false
+  var uninstall = false
 }
 
 func parseArguments() -> Arguments {
@@ -260,11 +262,13 @@ func parseArguments() -> Arguments {
   while index < values.count {
     switch values[index] {
     case "--keyboard": arguments.keyboardTracking = true
+    case "--install": arguments.install = true
+    case "--uninstall": arguments.uninstall = true
     case "--idle-seconds" where index + 1 < values.count:
       index += 1
       arguments.idleAfterSeconds = TimeInterval(values[index]) ?? arguments.idleAfterSeconds
     case "--help":
-      print("Usage: writing-signal-tracker [--keyboard] [--idle-seconds 120]")
+      print("Usage: writing-signal-tracker [--keyboard] [--idle-seconds 120] [--install | --uninstall]")
       exit(0)
     default: break
     }
@@ -273,8 +277,90 @@ func parseArguments() -> Arguments {
   return arguments
 }
 
+private let launchAgentLabel = "com.writingsignal.collector"
+
+private var launchAgentURL: URL {
+  FileManager.default.homeDirectoryForCurrentUser
+    .appendingPathComponent("Library/LaunchAgents", isDirectory: true)
+    .appendingPathComponent("\(launchAgentLabel).plist")
+}
+
+private var installedBinaryURL: URL {
+  FileManager.default.homeDirectoryForCurrentUser
+    .appendingPathComponent("Library/Application Support/WritingSignal/bin", isDirectory: true)
+    .appendingPathComponent("writing-signal-tracker")
+}
+
+private func runLaunchctl(_ arguments: [String]) throws {
+  let process = Process()
+  process.executableURL = URL(fileURLWithPath: "/bin/launchctl")
+  process.arguments = arguments
+  try process.run()
+  process.waitUntilExit()
+  if process.terminationStatus != 0 { throw NSError(domain: "WritingSignal", code: Int(process.terminationStatus)) }
+}
+
+@MainActor private func installLaunchAgent(arguments: Arguments) throws {
+  let fileManager = FileManager.default
+  try fileManager.createDirectory(at: SummaryStore.dataDirectory, withIntermediateDirectories: true)
+  try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: SummaryStore.dataDirectory.path)
+  let binaryDirectory = installedBinaryURL.deletingLastPathComponent()
+  try fileManager.createDirectory(at: binaryDirectory, withIntermediateDirectories: true)
+  try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: binaryDirectory.path)
+
+  let currentBinary = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL
+  if fileManager.fileExists(atPath: installedBinaryURL.path) {
+    try fileManager.removeItem(at: installedBinaryURL)
+  }
+  try fileManager.copyItem(at: currentBinary, to: installedBinaryURL)
+  try fileManager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: installedBinaryURL.path)
+
+  let agentDirectory = launchAgentURL.deletingLastPathComponent()
+  try fileManager.createDirectory(at: agentDirectory, withIntermediateDirectories: true)
+  let launchArguments = [installedBinaryURL.path, "--idle-seconds", String(Int(arguments.idleAfterSeconds))]
+    + (arguments.keyboardTracking ? ["--keyboard"] : [])
+  let plist: [String: Any] = [
+    "Label": launchAgentLabel,
+    "ProgramArguments": launchArguments,
+    "RunAtLoad": true,
+    "KeepAlive": true,
+    "ProcessType": "Background",
+    "StandardOutPath": SummaryStore.dataDirectory.appendingPathComponent("collector.log").path,
+    "StandardErrorPath": SummaryStore.dataDirectory.appendingPathComponent("collector-error.log").path,
+  ]
+  let data = try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
+  try data.write(to: launchAgentURL, options: .atomic)
+  try fileManager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: launchAgentURL.path)
+
+  let domain = "gui/\(getuid())"
+  try? runLaunchctl(["bootout", domain, launchAgentURL.path])
+  try runLaunchctl(["bootstrap", domain, launchAgentURL.path])
+  print("Writing Signal collector installed and started. Keyboard aggregates: \(arguments.keyboardTracking ? "enabled" : "disabled").")
+}
+
+@MainActor private func uninstallLaunchAgent() throws {
+  let fileManager = FileManager.default
+  let domain = "gui/\(getuid())"
+  if fileManager.fileExists(atPath: launchAgentURL.path) {
+    try? runLaunchctl(["bootout", domain, launchAgentURL.path])
+    try fileManager.removeItem(at: launchAgentURL)
+  }
+  if fileManager.fileExists(atPath: installedBinaryURL.path) {
+    try fileManager.removeItem(at: installedBinaryURL)
+  }
+  print("Writing Signal collector uninstalled. Existing local summaries remain until erased in Raycast.")
+}
+
 let arguments = parseArguments()
 do {
+  if arguments.install {
+    try installLaunchAgent(arguments: arguments)
+    exit(0)
+  }
+  if arguments.uninstall {
+    try uninstallLaunchAgent()
+    exit(0)
+  }
   let settings = CollectorSettings(keyboardTrackingEnabled: arguments.keyboardTracking, idleAfterSeconds: arguments.idleAfterSeconds)
   let tracker = Tracker(store: try SummaryStore(), settings: settings)
   print("Writing Signal tracker running. Press Control-C to stop.")

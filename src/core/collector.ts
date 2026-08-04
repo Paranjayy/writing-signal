@@ -90,6 +90,19 @@ export async function removeCollectorRule(bundleIdentifier: string): Promise<voi
   await writeRules(rules);
 }
 
+export async function clearCollectorData(): Promise<void> {
+  const directory = collectorDirectory();
+  await Promise.all(
+    ["summary.json", "rules.json", "collector.log", "collector-error.log"].map(async (name) => {
+      try {
+        await fs.unlink(path.join(directory, name));
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+    }),
+  );
+}
+
 export function usageForDay(summary: CollectorSummary | undefined, date = new Date()): CollectorApplication[] {
   return usageForRange(summary, date, date);
 }
