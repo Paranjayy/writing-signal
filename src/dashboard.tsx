@@ -1,13 +1,19 @@
 import { Action, ActionPanel, Detail, Icon, openExtensionPreferences } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, usageForDay } from "./core/collector";
+import { getBrowserUsage } from "./core/browser";
 import { activeSessionMillisSince, aggregateDays, dayKey, getState } from "./core/storage";
 import { dashboardMarkdown } from "./core/presentation";
 
 export default function Dashboard() {
   const { data, isLoading, revalidate } = usePromise(async () => {
-    const [state, collector] = await Promise.all([getState(), getCollectorSummary()]);
-    return { state, collector };
+    const now = new Date();
+    const [state, collector, browserUsage] = await Promise.all([
+      getState(),
+      getCollectorSummary(),
+      getBrowserUsage(now, now),
+    ]);
+    return { state, collector, browserUsage };
   });
   const state = data?.state;
   const collector = data?.collector;
@@ -36,6 +42,7 @@ export default function Dashboard() {
               state?.activeSession?.kind,
               usageForDay(collector),
               collector?.keyboardByDay[dayKey(now)],
+              data?.browserUsage,
             )
           : "# Writing Signal"
       }

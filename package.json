@@ -123,6 +123,21 @@
         "description": "Choose apps the native collector must never record.",
         "mode": "view",
         "keywords": ["private", "ignore", "exclude"]
+      },
+      {
+        "name": "browser-pulse",
+        "title": "Enable Browser Activity Tracking",
+        "description": "Track active website hostnames locally, with no URL paths or page content.",
+        "mode": "no-view",
+        "interval": "1m",
+        "keywords": ["websites", "domains", "browser"]
+      },
+      {
+        "name": "browser-time",
+        "title": "Open Browser Time",
+        "description": "See local time by website hostname from the enabled browser tracker.",
+        "mode": "view",
+        "keywords": ["websites", "domains", "browser"]
       }
   ]
 }

@@ -9,6 +9,7 @@ A local-first Raycast prototype for understanding writing effort without retaini
 - Capture selected text from the frontmost app. The extension stores only aggregate deltas (words, characters, and token types), never the selected text.
 - View daily and weekly time totals, activity modes, and simple token categories.
 - Keep a glanceable current-app and daily-total readout in the Raycast menu bar.
+- Optionally track active browser hostnames in Raycast background refresh; URL paths and page content are discarded.
 - Inspect the current clipboard's shape and explicitly clear the clipboard.
 
 ## Important boundaries

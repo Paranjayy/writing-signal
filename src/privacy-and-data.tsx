@@ -1,5 +1,6 @@
 import { Action, ActionPanel, Alert, Detail, Icon, confirmAlert, showHUD } from "@raycast/api";
 import { clearCollectorData } from "./core/collector";
+import { clearBrowserData } from "./core/browser";
 import { clearAllData } from "./core/storage";
 
 const markdown = `# Privacy & Data
@@ -14,6 +15,7 @@ const markdown = `# Privacy & Data
 
 - Raw selected text, keystrokes, word lists, clipboard text, screenshots, or app content.
 - Analytics, advertising identifiers, or any copy of your data on a Writing Signal server.
+- Browser URL paths, query parameters, and page content. When enabled, browser activity retains a hostname only.
 
 ## Storage and future sync
 
@@ -33,7 +35,7 @@ export default function PrivacyAndData() {
       primaryAction: { title: "Erase Local Data", style: Alert.ActionStyle.Destructive },
     });
     if (!confirmed) return;
-    await Promise.all([clearAllData(), clearCollectorData()]);
+    await Promise.all([clearAllData(), clearCollectorData(), clearBrowserData()]);
     await showHUD("Writing Signal data erased");
   }
 

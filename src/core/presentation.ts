@@ -1,5 +1,6 @@
 import { ACTIVITY_KINDS, ACTIVITY_LABELS, ActivityKind, DayStats, TokenCounts } from "./types";
 import { CollectorApplication, CollectorKeyboardSummary } from "./collector";
+import { DomainUsage } from "./browser";
 
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat().format(value);
@@ -42,6 +43,7 @@ export function dashboardMarkdown(
   activeKind?: ActivityKind,
   appUsage: CollectorApplication[] = [],
   keyboard?: CollectorKeyboardSummary,
+  browserUsage: DomainUsage[] = [],
 ): string {
   const activeTodayLabel = activeKind ? formatActivityLabel(activeKind) : "";
   return `# Writing Signal
@@ -99,6 +101,17 @@ ${
 ## Keyboard activity (today)
 
 ${keyboard ? `| Measure | Total |\n| --- | ---: |\n| Key presses | ${formatNumber(keyboard.keyDowns)} |\n| Estimated words | ${formatNumber(keyboard.estimatedWords)} |\n| Deletes | ${formatNumber(keyboard.deletions)} |` : "Disabled by default. Enable it only if aggregate keyboard activity is useful to you."}
+
+## Browser activity (today)
+
+${
+  browserUsage.length > 0
+    ? `| Hostname | Category | Time |\n| --- | --- | ---: |\n${browserUsage
+        .slice(0, 6)
+        .map((usage) => `| ${usage.host} | ${usage.category} | ${formatDuration(usage.milliseconds)} |`)
+        .join("\n")}`
+    : "Enable Browser Activity Tracking to see hostname-only browser time here."
+}
 
 ${activeTodayMilliseconds > 0 ? `> ${activeTodayLabel} timer is currently running.` : "> No activity timer is currently running."}
 `;
