@@ -41,6 +41,7 @@ export function dashboardMarkdown(
   activeTodayMilliseconds: number,
   activeWeekMilliseconds: number,
   activeKind?: ActivityKind,
+  plannedEndAt?: string,
   appUsage: CollectorApplication[] = [],
   keyboard?: CollectorKeyboardSummary,
   browserUsage: DomainUsage[] = [],
@@ -113,6 +114,6 @@ ${
     : "Enable Browser Activity Tracking to see hostname-only browser time here."
 }
 
-${activeTodayMilliseconds > 0 ? `> ${activeTodayLabel} timer is currently running.` : "> No activity timer is currently running."}
+${activeTodayMilliseconds > 0 ? `> ${activeTodayLabel} timer is currently running${plannedEndAt ? ` · planned to end at ${new Date(plannedEndAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : ""}.` : "> No activity timer is currently running."}
 `;
 }

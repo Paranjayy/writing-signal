@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon, openExtensionPreferences } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand, openExtensionPreferences } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { getBrowserUsage } from "./core/browser";
@@ -40,6 +40,7 @@ export default function Dashboard() {
               activeTodayMilliseconds,
               activeWeekMilliseconds,
               state?.activeSession?.kind,
+              state?.activeSession?.plannedEndAt,
               usageForDay(collector),
               collector?.keyboardByDay[dayKey(now)],
               data?.browserUsage,
@@ -66,6 +67,11 @@ export default function Dashboard() {
       actions={
         <ActionPanel>
           <Action title="Refresh Dashboard" icon={Icon.ArrowClockwise} onAction={revalidate} />
+          <Action
+            title="Start Focus Block"
+            icon={Icon.Clock}
+            onAction={() => launchCommand({ name: "start-focus-block", type: LaunchType.UserInitiated })}
+          />
           <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
         </ActionPanel>
       }

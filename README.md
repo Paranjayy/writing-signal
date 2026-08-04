@@ -5,6 +5,7 @@ A local-first Raycast prototype for understanding writing effort without retaini
 ## What works now
 
 - Start and stop intentional writing, creating, focused-work, or consuming sessions.
+- Start a timed Focus Block (25 minutes to 2 hours) that saves its exact planned duration automatically.
 - Backfill time in a couple of keystrokes when you only realize later that it disappeared.
 - Capture selected text from the frontmost app. The extension stores only aggregate deltas (words, characters, and token types), never the selected text.
 - View daily and weekly time totals, activity modes, and simple token categories.

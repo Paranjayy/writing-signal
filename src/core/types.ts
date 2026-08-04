@@ -31,6 +31,7 @@ export const ACTIVITY_LABELS: Record<ActivityKind, string> = {
 export type ActiveSession = {
   startedAt: string;
   kind: ActivityKind;
+  plannedEndAt?: string;
 };
 
 export type WritingState = {

@@ -57,6 +57,21 @@
         "keywords": ["time", "focus", "create", "watch"]
       },
       {
+        "name": "start-focus-block",
+        "title": "Start Focus Block",
+        "description": "Start a local timed writing, creating, focus, or consuming block.",
+        "mode": "view",
+        "keywords": ["pomodoro", "timer", "deep work"]
+      },
+      {
+        "name": "focus-block-pulse",
+        "title": "Focus Block Timer",
+        "description": "Completes due local focus blocks and saves their exact planned duration.",
+        "mode": "no-view",
+        "interval": "1m",
+        "keywords": ["timer", "focus", "background"]
+      },
+      {
         "name": "stop-writing-session",
         "title": "Stop Writing Session",
         "description": "Stop the active writing-time session.",

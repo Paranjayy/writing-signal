@@ -77,21 +77,27 @@ export async function recordSnapshot(counts: TokenCounts): Promise<TokenCounts> 
   return delta;
 }
 
-export async function startActivitySession(kind: ActivityKind): Promise<boolean> {
+export async function startActivitySession(kind: ActivityKind, plannedEndAt?: Date): Promise<boolean> {
   const state = await getState();
   if (state.activeSession) return false;
-  state.activeSession = { startedAt: new Date().toISOString(), kind };
+  state.activeSession = {
+    startedAt: new Date().toISOString(),
+    kind,
+    plannedEndAt: plannedEndAt && plannedEndAt > new Date() ? plannedEndAt.toISOString() : undefined,
+  };
   await saveState(state);
   return true;
 }
 
-export async function stopActivitySession(): Promise<{ duration: number; kind: ActivityKind } | undefined> {
+export async function stopActivitySession(
+  end = new Date(),
+): Promise<{ duration: number; kind: ActivityKind } | undefined> {
   const state = await getState();
   if (!state.activeSession) return undefined;
 
   const { kind } = state.activeSession;
   const start = new Date(state.activeSession.startedAt);
-  const end = new Date();
+  if (end <= start) return undefined;
   let cursor = start;
   while (cursor < end) {
     const nextMidnight = new Date(cursor);
@@ -107,6 +113,15 @@ export async function stopActivitySession(): Promise<{ duration: number; kind: A
   state.activeSession = undefined;
   await saveState(state);
   return { duration: end.getTime() - start.getTime(), kind };
+}
+
+export async function stopActivitySessionIfDue(
+  now = new Date(),
+): Promise<{ duration: number; kind: ActivityKind } | undefined> {
+  const state = await getState();
+  const plannedEndAt = state.activeSession?.plannedEndAt ? new Date(state.activeSession.plannedEndAt) : undefined;
+  if (!plannedEndAt || plannedEndAt > now) return undefined;
+  return stopActivitySession(plannedEndAt);
 }
 
 export async function recordActivity(kind: ActivityKind, durationMillis: number, date: Date): Promise<void> {
@@ -133,7 +148,9 @@ export function aggregateDays(state: WritingState, from: Date, through: Date): D
 export function activeSessionMillisSince(state: WritingState, since: Date, now = new Date()): number {
   if (!state.activeSession) return 0;
   const start = new Date(state.activeSession.startedAt);
-  return Math.max(0, now.getTime() - Math.max(start.getTime(), since.getTime()));
+  const plannedEnd = state.activeSession.plannedEndAt ? new Date(state.activeSession.plannedEndAt) : now;
+  const end = plannedEnd < now ? plannedEnd : now;
+  return Math.max(0, end.getTime() - Math.max(start.getTime(), since.getTime()));
 }
 
 export function totalActivityMillis(day: DayStats): number {

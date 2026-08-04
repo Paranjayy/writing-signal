@@ -21,6 +21,10 @@ declare namespace Preferences {
   export type StartWritingSession = ExtensionPreferences & {}
   /** Preferences accessible in the `start-activity-timer` command */
   export type StartActivityTimer = ExtensionPreferences & {}
+  /** Preferences accessible in the `start-focus-block` command */
+  export type StartFocusBlock = ExtensionPreferences & {}
+  /** Preferences accessible in the `focus-block-pulse` command */
+  export type FocusBlockPulse = ExtensionPreferences & {}
   /** Preferences accessible in the `stop-writing-session` command */
   export type StopWritingSession = ExtensionPreferences & {}
   /** Preferences accessible in the `log-activity` command */
@@ -86,6 +90,10 @@ declare namespace Arguments {
   export type StartWritingSession = {}
   /** Arguments passed to the `start-activity-timer` command */
   export type StartActivityTimer = {}
+  /** Arguments passed to the `start-focus-block` command */
+  export type StartFocusBlock = {}
+  /** Arguments passed to the `focus-block-pulse` command */
+  export type FocusBlockPulse = {}
   /** Arguments passed to the `stop-writing-session` command */
   export type StopWritingSession = {}
   /** Arguments passed to the `log-activity` command */
