@@ -39,6 +39,7 @@ Everything below is calculated locally from your own aggregate activity data.
 ${data.goals.dailyWords > 0 ? `- Words: ${formatNumber(data.insight.todayWords)} / ${formatNumber(data.goals.dailyWords)} (${percent(data.insight.todayWords, data.goals.dailyWords)})` : "- No daily word target set"}
 ${data.goals.dailyFocusMinutes > 0 ? `- Focus: ${formatDuration(data.state.days[dayKey(data.now)]?.activityMillis.focus ?? 0)} / ${formatDuration(data.goals.dailyFocusMinutes * 60_000)} (${percent(data.state.days[dayKey(data.now)]?.activityMillis.focus ?? 0, data.goals.dailyFocusMinutes * 60_000)})` : ""}
 ${data.goals.dailyCreatingMinutes > 0 ? `- Creating: ${formatDuration(data.state.days[dayKey(data.now)]?.activityMillis.creating ?? 0)} / ${formatDuration(data.goals.dailyCreatingMinutes * 60_000)} (${percent(data.state.days[dayKey(data.now)]?.activityMillis.creating ?? 0, data.goals.dailyCreatingMinutes * 60_000)})` : ""}
+${data.goals.dailyConsumingLimitMinutes > 0 ? `- Consuming ceiling: ${formatDuration(data.insight.categoryMillis.consuming)} / ${formatDuration(data.goals.dailyConsumingLimitMinutes * 60_000)} (${percent(data.insight.categoryMillis.consuming, data.goals.dailyConsumingLimitMinutes * 60_000)})` : ""}
 
 Targets are optional and only live in your Raycast local storage.
 

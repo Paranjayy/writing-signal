@@ -6,12 +6,14 @@ export type Goals = {
   dailyWords: number;
   dailyFocusMinutes: number;
   dailyCreatingMinutes: number;
+  dailyConsumingLimitMinutes: number;
 };
 
 export const DEFAULT_GOALS: Goals = {
   dailyWords: 0,
   dailyFocusMinutes: 0,
   dailyCreatingMinutes: 0,
+  dailyConsumingLimitMinutes: 0,
 };
 
 function nonNegativeNumber(value: unknown): number {
@@ -27,6 +29,7 @@ export async function getGoals(): Promise<Goals> {
       dailyWords: nonNegativeNumber(parsed.dailyWords),
       dailyFocusMinutes: nonNegativeNumber(parsed.dailyFocusMinutes),
       dailyCreatingMinutes: nonNegativeNumber(parsed.dailyCreatingMinutes),
+      dailyConsumingLimitMinutes: nonNegativeNumber(parsed.dailyConsumingLimitMinutes),
     };
   } catch {
     return DEFAULT_GOALS;
@@ -40,6 +43,7 @@ export async function saveGoals(goals: Goals): Promise<void> {
       dailyWords: nonNegativeNumber(goals.dailyWords),
       dailyFocusMinutes: nonNegativeNumber(goals.dailyFocusMinutes),
       dailyCreatingMinutes: nonNegativeNumber(goals.dailyCreatingMinutes),
+      dailyConsumingLimitMinutes: nonNegativeNumber(goals.dailyConsumingLimitMinutes),
     } satisfies Goals),
   );
 }

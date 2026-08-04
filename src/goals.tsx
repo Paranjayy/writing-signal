@@ -16,11 +16,17 @@ export default function GoalsCommand() {
     const dailyWords = parseGoal(values.dailyWords);
     const dailyFocusMinutes = parseGoal(values.dailyFocusMinutes);
     const dailyCreatingMinutes = parseGoal(values.dailyCreatingMinutes);
-    if (dailyWords === undefined || dailyFocusMinutes === undefined || dailyCreatingMinutes === undefined) {
+    const dailyConsumingLimitMinutes = parseGoal(values.dailyConsumingLimitMinutes);
+    if (
+      dailyWords === undefined ||
+      dailyFocusMinutes === undefined ||
+      dailyCreatingMinutes === undefined ||
+      dailyConsumingLimitMinutes === undefined
+    ) {
       await showToast({ style: Toast.Style.Failure, title: "Use whole numbers that are zero or higher" });
       return;
     }
-    await saveGoals({ dailyWords, dailyFocusMinutes, dailyCreatingMinutes });
+    await saveGoals({ dailyWords, dailyFocusMinutes, dailyCreatingMinutes, dailyConsumingLimitMinutes });
     await showToast({ style: Toast.Style.Success, title: "Daily goals saved locally" });
   }
 
@@ -52,6 +58,12 @@ export default function GoalsCommand() {
         title="Creating (minutes)"
         defaultValue={String(goals?.dailyCreatingMinutes ?? 0)}
         placeholder="e.g. 60"
+      />
+      <Form.TextField
+        id="dailyConsumingLimitMinutes"
+        title="Consuming ceiling (minutes)"
+        defaultValue={String(goals?.dailyConsumingLimitMinutes ?? 0)}
+        placeholder="e.g. 90"
       />
     </Form>
   );

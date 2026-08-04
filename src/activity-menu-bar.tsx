@@ -37,7 +37,10 @@ export default function ActivityMenuBar() {
         <MenuBarExtra.Item title={`Today: ${formatDuration(total)}`} />
       </MenuBarExtra.Section>
       {data &&
-        (data.goals.dailyWords > 0 || data.goals.dailyFocusMinutes > 0 || data.goals.dailyCreatingMinutes > 0) && (
+        (data.goals.dailyWords > 0 ||
+          data.goals.dailyFocusMinutes > 0 ||
+          data.goals.dailyCreatingMinutes > 0 ||
+          data.goals.dailyConsumingLimitMinutes > 0) && (
           <MenuBarExtra.Section title="Gentle goals">
             {data.goals.dailyWords > 0 && (
               <MenuBarExtra.Item title={`Words: ${today?.words ?? 0} / ${data.goals.dailyWords}`} />
@@ -50,6 +53,11 @@ export default function ActivityMenuBar() {
             {data.goals.dailyCreatingMinutes > 0 && (
               <MenuBarExtra.Item
                 title={`Creating: ${formatDuration(today?.activityMillis.creating ?? 0)} / ${formatDuration(data.goals.dailyCreatingMinutes * 60_000)}`}
+              />
+            )}
+            {data.goals.dailyConsumingLimitMinutes > 0 && (
+              <MenuBarExtra.Item
+                title={`Consuming: ${formatDuration(usage.filter((app) => app.category === "consuming").reduce((total, app) => total + app.seconds * 1_000, 0))} / ${formatDuration(data.goals.dailyConsumingLimitMinutes * 60_000)}`}
               />
             )}
           </MenuBarExtra.Section>
