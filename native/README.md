@@ -43,6 +43,8 @@ swift run writing-signal-tracker --install --keyboard
 
 Use Raycast’s **Manage App Rules** command to override a bundle identifier’s broad category. Rules live in the same owner-only local directory and are applied immediately by the collector; no restart is needed.
 
+Use **Manage Privacy Exclusions** for apps that must never be recorded at all. An excluded app contributes no app time or keyboard aggregates and is not shown as the current app.
+
 ## Limits of this first companion
 
 - It tracks while the process is running; a signed app plus user-approved launch agent is the next packaging step.

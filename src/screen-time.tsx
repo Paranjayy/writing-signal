@@ -9,6 +9,7 @@ import {
 } from "./core/collector";
 import { formatDuration } from "./core/presentation";
 import { AppRuleForm } from "./app-rules";
+import { ExcludeAppForm } from "./privacy-exclusions";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
 
@@ -38,6 +39,11 @@ export default function ScreenTime() {
               title="Set App Category"
               icon={Icon.Pencil}
               target={<AppRuleForm bundleIdentifier={app.bundleIdentifier} />}
+            />
+            <Action.Push
+              title="Exclude App from Tracking"
+              icon={Icon.EyeDisabled}
+              target={<ExcludeAppForm bundleIdentifier={app.bundleIdentifier} />}
             />
             <Action.CopyToClipboard title="Copy Bundle Identifier" content={app.bundleIdentifier} />
           </ActionPanel>

@@ -38,6 +38,7 @@ struct CollectorSettings: Codable {
 struct RuleFile: Codable {
   var schemaVersion = 1
   var categories: [String: ActivityCategory] = [:]
+  var excludedBundleIdentifiers: [String]?
 }
 
 struct CollectorSummary: Codable {
@@ -127,6 +128,13 @@ final class RuleStore {
           rules.schemaVersion == 1 else { return nil }
     return rules.categories[bundleIdentifier]
   }
+
+  func isExcluded(_ bundleIdentifier: String) -> Bool {
+    guard let data = try? Data(contentsOf: url),
+          let rules = try? decoder.decode(RuleFile.self, from: data),
+          rules.schemaVersion == 1 else { return false }
+    return rules.excludedBundleIdentifiers?.contains(bundleIdentifier) ?? false
+  }
 }
 
 final class Tracker: NSObject {
@@ -176,7 +184,11 @@ final class Tracker: NSObject {
     if let previous = summary.activeApplication, elapsed > 0, !isIdle() {
       add(seconds: elapsed, for: previous, on: lastTick)
     }
-    summary.activeApplication = activeApplication()
+    if let app = activeApplication(), !ruleStore.isExcluded(app.bundleIdentifier) {
+      summary.activeApplication = app
+    } else {
+      summary.activeApplication = nil
+    }
     summary.generatedAt = now
     store.save(summary)
   }
@@ -199,12 +211,12 @@ final class Tracker: NSObject {
   }
 
   private func updateKeyboard(_ update: (inout KeyboardSummary) -> Void) {
+    guard let app = summary.activeApplication else { return }
     let key = dayKey(Date())
     var keyboard = summary.keyboardByDay[key] ?? KeyboardSummary()
     update(&keyboard)
     summary.keyboardByDay[key] = keyboard
 
-    guard let app = summary.activeApplication else { return }
     var perDay = summary.keyboardByDayAndApplication ?? [:]
     var perApplication = perDay[key] ?? [:]
     var appKeyboard = perApplication[app.bundleIdentifier] ?? KeyboardSummary()

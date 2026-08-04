@@ -39,6 +39,8 @@ declare namespace Preferences {
   export type ActivityMenuBar = ExtensionPreferences & {}
   /** Preferences accessible in the `app-rules` command */
   export type AppRules = ExtensionPreferences & {}
+  /** Preferences accessible in the `privacy-exclusions` command */
+  export type PrivacyExclusions = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -68,5 +70,7 @@ declare namespace Arguments {
   export type ActivityMenuBar = {}
   /** Arguments passed to the `app-rules` command */
   export type AppRules = {}
+  /** Arguments passed to the `privacy-exclusions` command */
+  export type PrivacyExclusions = {}
 }
 

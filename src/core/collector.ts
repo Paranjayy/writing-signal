@@ -33,7 +33,11 @@ export type CollectorSummary = {
   keyboardByDayAndApplication?: Record<string, Record<string, CollectorKeyboardSummary>>;
 };
 
-type RuleFile = { schemaVersion: 1; categories: Record<string, CollectorCategory> };
+type RuleFile = {
+  schemaVersion: 1;
+  categories: Record<string, CollectorCategory>;
+  excludedBundleIdentifiers?: string[];
+};
 
 function collectorDirectory(): string {
   return path.join(homedir(), ".writing-signal");
@@ -55,39 +59,65 @@ export async function getCollectorSummary(): Promise<CollectorSummary | undefine
 }
 
 export async function getCollectorRules(): Promise<Record<string, CollectorCategory>> {
+  return (await getRuleFile()).categories;
+}
+
+async function getRuleFile(): Promise<RuleFile> {
   try {
     const raw = await fs.readFile(path.join(collectorDirectory(), "rules.json"), "utf8");
     const parsed = JSON.parse(raw) as RuleFile;
-    return parsed.schemaVersion === 1 ? parsed.categories : {};
+    return parsed.schemaVersion === 1
+      ? {
+          schemaVersion: 1,
+          categories: parsed.categories ?? {},
+          excludedBundleIdentifiers: parsed.excludedBundleIdentifiers ?? [],
+        }
+      : { schemaVersion: 1, categories: {}, excludedBundleIdentifiers: [] };
   } catch {
-    return {};
+    return { schemaVersion: 1, categories: {}, excludedBundleIdentifiers: [] };
   }
 }
 
-async function writeRules(categories: Record<string, CollectorCategory>): Promise<void> {
+async function writeRules(rules: RuleFile): Promise<void> {
   const directory = collectorDirectory();
   await fs.mkdir(directory, { recursive: true, mode: 0o700 });
-  await fs.writeFile(
-    path.join(directory, "rules.json"),
-    JSON.stringify({ schemaVersion: 1, categories } satisfies RuleFile, null, 2),
-    {
-      encoding: "utf8",
-      mode: 0o600,
-    },
-  );
+  await fs.writeFile(path.join(directory, "rules.json"), JSON.stringify(rules satisfies RuleFile, null, 2), {
+    encoding: "utf8",
+    mode: 0o600,
+  });
 }
 
 export async function setCollectorRule(bundleIdentifier: string, category: CollectorCategory): Promise<void> {
   const normalized = bundleIdentifier.trim();
   if (!normalized) throw new Error("Bundle identifier is required");
-  const rules = await getCollectorRules();
-  rules[normalized] = category;
+  const rules = await getRuleFile();
+  rules.categories[normalized] = category;
   await writeRules(rules);
 }
 
 export async function removeCollectorRule(bundleIdentifier: string): Promise<void> {
-  const rules = await getCollectorRules();
-  delete rules[bundleIdentifier];
+  const rules = await getRuleFile();
+  delete rules.categories[bundleIdentifier];
+  await writeRules(rules);
+}
+
+export async function getCollectorExclusions(): Promise<string[]> {
+  return (await getRuleFile()).excludedBundleIdentifiers ?? [];
+}
+
+export async function excludeCollectorApp(bundleIdentifier: string): Promise<void> {
+  const normalized = bundleIdentifier.trim();
+  if (!normalized) throw new Error("Bundle identifier is required");
+  const rules = await getRuleFile();
+  rules.excludedBundleIdentifiers = [...new Set([...(rules.excludedBundleIdentifiers ?? []), normalized])].sort();
+  await writeRules(rules);
+}
+
+export async function includeCollectorApp(bundleIdentifier: string): Promise<void> {
+  const rules = await getRuleFile();
+  rules.excludedBundleIdentifiers = (rules.excludedBundleIdentifiers ?? []).filter(
+    (entry) => entry !== bundleIdentifier,
+  );
   await writeRules(rules);
 }
 
