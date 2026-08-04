@@ -1,6 +1,17 @@
-import { Action, ActionPanel, Alert, Detail, Icon, confirmAlert, showHUD } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  Alert,
+  Detail,
+  Icon,
+  LaunchType,
+  confirmAlert,
+  launchCommand,
+  showHUD,
+} from "@raycast/api";
 import { clearCollectorData } from "./core/collector";
 import { clearBrowserData } from "./core/browser";
+import { clearGoals } from "./core/goals";
 import { clearAllData } from "./core/storage";
 
 const markdown = `# Privacy & Data
@@ -19,7 +30,7 @@ const markdown = `# Privacy & Data
 
 ## Storage and future sync
 
-This Raycast prototype uses Raycast's local encrypted storage. There is intentionally no “unencrypted” toggle here because the API owns its secure local database. Future iOS, Android, web, Windows, and Linux clients should use an end-to-end encrypted vault with an optional passphrase; sync is not implemented yet.
+This Raycast prototype uses Raycast's local encrypted storage. There is intentionally no “unencrypted” toggle here because the API owns its secure local database. You can make an owner-only plain JSON export for inspection or future migration. It contains aggregates, not raw content, but should still be treated as private. Future iOS, Android, web, Windows, and Linux clients should use an end-to-end encrypted vault with an optional passphrase; sync is not implemented yet.
 
 ## Native collector bridge
 
@@ -35,7 +46,7 @@ export default function PrivacyAndData() {
       primaryAction: { title: "Erase Local Data", style: Alert.ActionStyle.Destructive },
     });
     if (!confirmed) return;
-    await Promise.all([clearAllData(), clearCollectorData(), clearBrowserData()]);
+    await Promise.all([clearAllData(), clearGoals(), clearCollectorData(), clearBrowserData()]);
     await showHUD("Writing Signal data erased");
   }
 
@@ -45,6 +56,11 @@ export default function PrivacyAndData() {
       markdown={markdown}
       actions={
         <ActionPanel>
+          <Action
+            title="Export Local Data"
+            icon={Icon.Download}
+            onAction={() => launchCommand({ name: "export-data", type: LaunchType.UserInitiated })}
+          />
           <Action title="Erase All Local Data" icon={Icon.Trash} style={Action.Style.Destructive} onAction={erase} />
         </ActionPanel>
       }

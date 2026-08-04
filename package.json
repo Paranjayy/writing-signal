@@ -173,6 +173,13 @@
         "description": "Set optional daily writing, focused-work, and creating targets.",
         "mode": "view",
         "keywords": ["target", "progress", "writing"]
+      },
+      {
+        "name": "export-data",
+        "title": "Export Local Data",
+        "description": "Write a private local JSON snapshot of your aggregates and settings.",
+        "mode": "view",
+        "keywords": ["backup", "portable", "privacy"]
       }
   ]
 }

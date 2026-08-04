@@ -55,6 +55,8 @@ declare namespace Preferences {
   export type Insights = ExtensionPreferences & {}
   /** Preferences accessible in the `goals` command */
   export type Goals = ExtensionPreferences & {}
+  /** Preferences accessible in the `export-data` command */
+  export type ExportData = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -100,5 +102,7 @@ declare namespace Arguments {
   export type Insights = {}
   /** Arguments passed to the `goals` command */
   export type Goals = {}
+  /** Arguments passed to the `export-data` command */
+  export type ExportData = {}
 }
 

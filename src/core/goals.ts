@@ -43,3 +43,7 @@ export async function saveGoals(goals: Goals): Promise<void> {
     } satisfies Goals),
   );
 }
+
+export async function clearGoals(): Promise<void> {
+  await LocalStorage.removeItem(STORAGE_KEY);
+}

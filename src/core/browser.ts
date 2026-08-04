@@ -8,12 +8,12 @@ export type BrowserCategory = "writing" | "creating" | "consuming" | "other";
 
 export type DomainUsage = { host: string; category: BrowserCategory; milliseconds: number };
 
-type BrowserState = {
+export type BrowserState = {
   days: Record<string, Record<string, DomainUsage>>;
   previous?: { host: string; category: BrowserCategory; seenAt: string };
 };
 
-type BrowserRules = { categoryByHost: Record<string, BrowserCategory>; excludedHosts: string[] };
+export type BrowserRules = { categoryByHost: Record<string, BrowserCategory>; excludedHosts: string[] };
 
 function dayKey(date: Date): string {
   return date.toLocaleDateString("en-CA");
@@ -75,6 +75,11 @@ async function saveRules(rules: BrowserRules): Promise<void> {
 
 export async function getBrowserRules(): Promise<BrowserRules> {
   return getRules();
+}
+
+export async function getBrowserExport(): Promise<{ activity: BrowserState; rules: BrowserRules }> {
+  const [activity, rules] = await Promise.all([getState(), getRules()]);
+  return { activity, rules };
 }
 
 export async function setBrowserCategory(host: string, category: BrowserCategory): Promise<void> {
