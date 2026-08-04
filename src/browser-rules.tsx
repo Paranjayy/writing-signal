@@ -6,7 +6,15 @@ const categories: BrowserCategory[] = ["writing", "creating", "consuming", "othe
 
 type RuleValues = { host: string; category: BrowserCategory };
 
-export function BrowserRuleForm({ host = "", onSaved }: { host?: string; onSaved?: () => Promise<void> }) {
+export function BrowserRuleForm({
+  host = "",
+  category = "creating",
+  onSaved,
+}: {
+  host?: string;
+  category?: BrowserCategory;
+  onSaved?: () => Promise<void>;
+}) {
   async function submit(values: RuleValues) {
     try {
       await setBrowserCategory(values.host, values.category);
@@ -26,7 +34,7 @@ export function BrowserRuleForm({ host = "", onSaved }: { host?: string; onSaved
       }
     >
       <Form.TextField id="host" title="Hostname" defaultValue={host} placeholder="example.com" />
-      <Form.Dropdown id="category" title="Category" defaultValue="creating">
+      <Form.Dropdown id="category" title="Category" defaultValue={category}>
         {categories.map((category) => (
           <Form.Dropdown.Item key={category} value={category} title={category} />
         ))}
@@ -72,7 +80,7 @@ export default function BrowserRules() {
               <Action.Push
                 title="Edit Rule"
                 icon={Icon.Pencil}
-                target={<BrowserRuleForm host={host} onSaved={refresh} />}
+                target={<BrowserRuleForm host={host} category={category} onSaved={refresh} />}
               />
               <Action
                 title="Remove Rule"

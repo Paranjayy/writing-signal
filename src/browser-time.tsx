@@ -30,7 +30,7 @@ export default function BrowserTime() {
             <Action.Push
               title="Set Domain Category"
               icon={Icon.Pencil}
-              target={<BrowserRuleForm host={usage.host} />}
+              target={<BrowserRuleForm host={usage.host} category={usage.category} />}
             />
             <Action.Push
               title="Exclude Domain"
