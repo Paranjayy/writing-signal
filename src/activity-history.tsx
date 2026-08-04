@@ -1,5 +1,6 @@
 import { Action, ActionPanel, Icon, LaunchType, List, launchCommand } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
+import { useState } from "react";
 import { CollectorApplication, getCollectorSummary, localDayKey } from "./core/collector";
 import { formatDuration, formatNumber } from "./core/presentation";
 
@@ -36,7 +37,9 @@ function categoryTotals(apps: CollectorApplication[]): Record<CollectorApplicati
 
 export default function ActivityHistory() {
   const { data: summary, isLoading, revalidate } = usePromise(getCollectorSummary);
-  const days = calendarDays(14).map((date) => {
+  const [range, setRange] = useState("14");
+  const rangeDays = Number(range);
+  const days = calendarDays(rangeDays).map((date) => {
     const key = localDayKey(date);
     const apps = Object.values(summary?.days[key] ?? {});
     const totals = categoryTotals(apps);
@@ -60,8 +63,20 @@ export default function ActivityHistory() {
   }
 
   return (
-    <List isLoading={isLoading} navigationTitle="Activity History" searchBarPlaceholder="Filter days">
-      <List.Section title="Last 14 days" subtitle="Foreground-app time, not raw content">
+    <List
+      isLoading={isLoading}
+      navigationTitle="Activity History"
+      searchBarPlaceholder="Filter days"
+      searchBarAccessory={
+        <List.Dropdown tooltip="History range" value={range} onChange={setRange}>
+          <List.Dropdown.Item title="Last 7 Days" value="7" />
+          <List.Dropdown.Item title="Last 14 Days" value="14" />
+          <List.Dropdown.Item title="Last 30 Days" value="30" />
+          <List.Dropdown.Item title="Last 90 Days" value="90" />
+        </List.Dropdown>
+      }
+    >
+      <List.Section title={`Last ${rangeDays} days`} subtitle="Foreground-app time, not raw content">
         {days.map((day) => (
           <List.Item
             key={day.key}
