@@ -56,6 +56,7 @@ ${
 - Printable key presses: ${formatNumber(data.keyboard.printableKeyDowns)}
 - Estimated words: ${formatNumber(data.keyboard.estimatedWords)}
 - Deletes: ${formatNumber(data.keyboard.deletions)}
+${(data.today?.seconds ?? 0) >= 60 && data.keyboard.estimatedWords > 0 ? `- Estimated pace: ${formatNumber(Math.round((data.keyboard.estimatedWords * 3_600) / (data.today?.seconds ?? 1)))} words/hour` : ""}
 
 These are counts only; no keys or text are stored.`
     : "Keyboard aggregates are disabled or no activity was attributed to this app."
