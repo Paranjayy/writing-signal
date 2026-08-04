@@ -6,6 +6,8 @@ const MAX_PULSE_GAP_MS = 2 * 60_000;
 
 export type BrowserCategory = "writing" | "creating" | "consuming" | "other";
 
+const BROWSER_CATEGORIES: BrowserCategory[] = ["writing", "creating", "consuming", "other"];
+
 export type DomainUsage = { host: string; category: BrowserCategory; milliseconds: number };
 
 export type BrowserState = {
@@ -178,7 +180,15 @@ export async function mergeBrowserExport(input: unknown): Promise<number> {
   for (const [dateKey, incomingDomains] of Object.entries(imported.activity?.days ?? {})) {
     const domains = activity.days[dateKey] ?? {};
     for (const [host, incoming] of Object.entries(incomingDomains)) {
-      if (!incoming || typeof incoming.milliseconds !== "number") continue;
+      if (
+        !incoming ||
+        typeof incoming.host !== "string" ||
+        !BROWSER_CATEGORIES.includes(incoming.category) ||
+        typeof incoming.milliseconds !== "number" ||
+        !Number.isFinite(incoming.milliseconds) ||
+        incoming.milliseconds < 0
+      )
+        continue;
       const existing = domains[host];
       domains[host] = existing
         ? { ...existing, milliseconds: existing.milliseconds + incoming.milliseconds }

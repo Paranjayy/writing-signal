@@ -4,6 +4,10 @@ import { ACTIVITY_KINDS, ActivityKind, DayStats, TokenCounts, WritingState } fro
 
 const STORAGE_KEY = "writing-signal:state:v1";
 
+function nonNegative(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;
+}
+
 export function dayKey(date: Date): string {
   return date.toLocaleDateString("en-CA");
 }
@@ -18,11 +22,11 @@ function emptyDay(): DayStats {
 
 function normalizeDay(input: Partial<DayStats> & { writingMillis?: number }): DayStats {
   const day = emptyDay();
-  for (const key of Object.keys(emptyCounts()) as (keyof TokenCounts)[]) day[key] = input[key] ?? 0;
-  day.snapshots = input.snapshots ?? 0;
-  for (const kind of ACTIVITY_KINDS) day.activityMillis[kind] = input.activityMillis?.[kind] ?? 0;
+  for (const key of Object.keys(emptyCounts()) as (keyof TokenCounts)[]) day[key] = nonNegative(input[key]);
+  day.snapshots = nonNegative(input.snapshots);
+  for (const kind of ACTIVITY_KINDS) day.activityMillis[kind] = nonNegative(input.activityMillis?.[kind]);
   // v1 stored only writing time. Preserve it when loading existing local data.
-  day.activityMillis.writing += input.writingMillis ?? 0;
+  day.activityMillis.writing += nonNegative(input.writingMillis);
   return day;
 }
 
