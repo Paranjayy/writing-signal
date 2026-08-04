@@ -57,6 +57,8 @@ declare namespace Preferences {
   export type Goals = ExtensionPreferences & {}
   /** Preferences accessible in the `export-data` command */
   export type ExportData = ExtensionPreferences & {}
+  /** Preferences accessible in the `keyboard-activity` command */
+  export type KeyboardActivity = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
@@ -104,5 +106,7 @@ declare namespace Arguments {
   export type Goals = {}
   /** Arguments passed to the `export-data` command */
   export type ExportData = {}
+  /** Arguments passed to the `keyboard-activity` command */
+  export type KeyboardActivity = {}
 }
 

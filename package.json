@@ -180,6 +180,13 @@
         "description": "Write a private local JSON snapshot of your aggregates and settings.",
         "mode": "view",
         "keywords": ["backup", "portable", "privacy"]
+      },
+      {
+        "name": "keyboard-activity",
+        "title": "Open Keyboard Activity",
+        "description": "See optional local keyboard aggregates by foreground app.",
+        "mode": "view",
+        "keywords": ["typing", "words", "keys"]
       }
   ]
 }

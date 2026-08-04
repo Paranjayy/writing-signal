@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon, List } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, LaunchType, List, launchCommand } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import {
   CollectorApplication,
@@ -73,6 +73,21 @@ export default function ScreenTime() {
       </List.Section>
       <List.Section title="Last 7 Days" subtitle={`${weeklyUsage.length} apps`}>
         {weeklyUsage.map((app) => appItem(app, "week"))}
+      </List.Section>
+      <List.Section>
+        <List.Item
+          title="Open Keyboard Activity"
+          subtitle="Optional local key and estimated-word aggregates by app"
+          icon={Icon.Keyboard}
+          actions={
+            <ActionPanel>
+              <Action
+                title="Open Keyboard Activity"
+                onAction={() => launchCommand({ name: "keyboard-activity", type: LaunchType.UserInitiated })}
+              />
+            </ActionPanel>
+          }
+        />
       </List.Section>
     </List>
   );

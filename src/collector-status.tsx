@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Detail, Icon } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, LaunchType, launchCommand } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, usageForDay } from "./core/collector";
 import { formatDuration } from "./core/presentation";
@@ -20,6 +20,11 @@ export default function CollectorStatus() {
       actions={
         <ActionPanel>
           <Action title="Refresh Status" icon={Icon.ArrowClockwise} onAction={revalidate} />
+          <Action
+            title="Open Keyboard Activity"
+            icon={Icon.Keyboard}
+            onAction={() => launchCommand({ name: "keyboard-activity", type: LaunchType.UserInitiated })}
+          />
         </ActionPanel>
       }
     />
