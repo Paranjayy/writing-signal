@@ -6,7 +6,7 @@ import { TokenCounts } from "./types";
 const STORAGE_KEY = "writing-signal:clipboard-patterns:v1";
 const SECRET_KEY = "writing-signal:clipboard-pattern-key:v1";
 
-export type ClipboardDay = TokenCounts & { copies: number };
+export type ClipboardDay = TokenCounts & { copies: number; linkLikeCopies: number; codeLikeCopies: number };
 
 type ClipboardHistoryState = {
   days: Record<string, ClipboardDay>;
@@ -18,7 +18,17 @@ function dayKey(date = new Date()): string {
 }
 
 function emptyDay(): ClipboardDay {
-  return { ...emptyCounts(), copies: 0 };
+  return { ...emptyCounts(), copies: 0, linkLikeCopies: 0, codeLikeCopies: 0 };
+}
+
+function clipboardShape(text: string): { linkLike: boolean; codeLike: boolean } {
+  const trimmed = text.trim();
+  return {
+    linkLike: /^(?:https?:\/\/|www\.)\S+$/i.test(trimmed),
+    codeLike: /(?:=>|\{\s*$|\}\s*$|;\s*$|<\/?[A-Za-z][^>]*>|\b(?:const|let|function|class|import|SELECT)\b)/m.test(
+      trimmed,
+    ),
+  };
 }
 
 async function fingerprint(text: string): Promise<string> {
@@ -43,6 +53,8 @@ export async function getClipboardHistory(): Promise<ClipboardHistoryState> {
           day[countKey] = typeof input[countKey] === "number" ? (input[countKey] ?? 0) : 0;
         }
         day.copies = typeof input.copies === "number" ? input.copies : 0;
+        day.linkLikeCopies = typeof input.linkLikeCopies === "number" ? input.linkLikeCopies : 0;
+        day.codeLikeCopies = typeof input.codeLikeCopies === "number" ? input.codeLikeCopies : 0;
         return [key, day];
       }),
     );
@@ -65,6 +77,9 @@ export async function recordClipboardPulse(): Promise<ClipboardDay | undefined> 
   const day = state.days[key] ?? emptyDay();
   day.copies += 1;
   addCounts(day, classifyText(text));
+  const shape = clipboardShape(text);
+  if (shape.linkLike) day.linkLikeCopies += 1;
+  if (shape.codeLike) day.codeLikeCopies += 1;
   state.days[key] = day;
   state.lastFingerprint = nextFingerprint;
   await LocalStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -78,6 +93,8 @@ export function aggregateClipboardHistory(state: ClipboardHistoryState, from: Da
   for (const [key, day] of Object.entries(state.days)) {
     if (key < fromKey || key > throughKey) continue;
     total.copies += day.copies;
+    total.linkLikeCopies += day.linkLikeCopies;
+    total.codeLikeCopies += day.codeLikeCopies;
     addCounts(total, day);
   }
   return total;
@@ -98,6 +115,8 @@ export async function mergeClipboardPatternExport(input: unknown): Promise<numbe
   for (const [key, input] of Object.entries(importedDays)) {
     const day = state.days[key] ?? emptyDay();
     day.copies += typeof input.copies === "number" ? input.copies : 0;
+    day.linkLikeCopies += typeof input.linkLikeCopies === "number" ? input.linkLikeCopies : 0;
+    day.codeLikeCopies += typeof input.codeLikeCopies === "number" ? input.codeLikeCopies : 0;
     for (const countKey of Object.keys(emptyCounts()) as (keyof TokenCounts)[]) {
       day[countKey] += typeof input[countKey] === "number" ? (input[countKey] ?? 0) : 0;
     }
