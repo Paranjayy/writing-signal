@@ -17,6 +17,7 @@ A local-first Raycast prototype for understanding writing effort without retaini
 - Set optional daily writing, focus, and creating targets; they are progress cues, not streaks.
 - Export a portable local JSON snapshot to an owner-only file in `Documents/Writing Signal Backups`.
 - Optionally create a passphrase-encrypted AES-256-GCM backup; its passphrase is never stored.
+- Merge a plain or encrypted backup into another Raycast installation for portable aggregate history and goals.
 - Tune the native collector's local idle threshold, so inactive time does not get counted as screen time.
 - Pause all automatic app and keyboard aggregate tracking for a chosen time window.
 - Choose whether automatic app and keyboard aggregates are retained for 30 days, 90 days, one year, or indefinitely.

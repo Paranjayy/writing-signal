@@ -76,6 +76,11 @@ export default function PrivacyAndData() {
             icon={Icon.Lock}
             onAction={() => launchCommand({ name: "export-encrypted-data", type: LaunchType.UserInitiated })}
           />
+          <Action
+            title="Import Local Data"
+            icon={Icon.Upload}
+            onAction={() => launchCommand({ name: "import-data", type: LaunchType.UserInitiated })}
+          />
           <Action title="Erase All Local Data" icon={Icon.Trash} style={Action.Style.Destructive} onAction={erase} />
         </ActionPanel>
       }

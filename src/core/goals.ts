@@ -51,3 +51,13 @@ export async function saveGoals(goals: Goals): Promise<void> {
 export async function clearGoals(): Promise<void> {
   await LocalStorage.removeItem(STORAGE_KEY);
 }
+
+export async function restoreGoals(input: unknown): Promise<void> {
+  const value = input as Partial<Goals>;
+  await saveGoals({
+    dailyWords: nonNegativeNumber(value?.dailyWords),
+    dailyFocusMinutes: nonNegativeNumber(value?.dailyFocusMinutes),
+    dailyCreatingMinutes: nonNegativeNumber(value?.dailyCreatingMinutes),
+    dailyConsumingLimitMinutes: nonNegativeNumber(value?.dailyConsumingLimitMinutes),
+  });
+}

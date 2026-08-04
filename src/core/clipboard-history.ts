@@ -91,3 +91,18 @@ export async function getClipboardPatternExport(): Promise<{ days: Record<string
   const state = await getClipboardHistory();
   return { days: state.days };
 }
+
+export async function mergeClipboardPatternExport(input: unknown): Promise<number> {
+  const importedDays = (input as { days?: Record<string, Partial<ClipboardDay>> })?.days ?? {};
+  const state = await getClipboardHistory();
+  for (const [key, input] of Object.entries(importedDays)) {
+    const day = state.days[key] ?? emptyDay();
+    day.copies += typeof input.copies === "number" ? input.copies : 0;
+    for (const countKey of Object.keys(emptyCounts()) as (keyof TokenCounts)[]) {
+      day[countKey] += typeof input[countKey] === "number" ? (input[countKey] ?? 0) : 0;
+    }
+    state.days[key] = day;
+  }
+  await LocalStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  return Object.keys(importedDays).length;
+}

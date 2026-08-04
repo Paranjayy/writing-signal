@@ -233,6 +233,13 @@
         "keywords": ["backup", "encryption", "passphrase"]
       },
       {
+        "name": "import-data",
+        "title": "Import Local Data",
+        "description": "Merge a plain or encrypted Writing Signal backup into local Raycast aggregates.",
+        "mode": "view",
+        "keywords": ["restore", "backup", "migration"]
+      },
+      {
         "name": "keyboard-activity",
         "title": "Open Keyboard Activity",
         "description": "See optional local keyboard aggregates by foreground app.",

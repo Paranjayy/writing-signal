@@ -171,3 +171,23 @@ export async function getBrowserUsage(from: Date, through: Date): Promise<Domain
 export async function clearBrowserData(): Promise<void> {
   await Promise.all([LocalStorage.removeItem(STORAGE_KEY), LocalStorage.removeItem(RULES_STORAGE_KEY)]);
 }
+
+export async function mergeBrowserExport(input: unknown): Promise<number> {
+  const imported = input as Partial<{ activity: BrowserState; rules: BrowserRules }>;
+  const [activity, rules] = await Promise.all([getState(), getRules()]);
+  for (const [dateKey, incomingDomains] of Object.entries(imported.activity?.days ?? {})) {
+    const domains = activity.days[dateKey] ?? {};
+    for (const [host, incoming] of Object.entries(incomingDomains)) {
+      if (!incoming || typeof incoming.milliseconds !== "number") continue;
+      const existing = domains[host];
+      domains[host] = existing
+        ? { ...existing, milliseconds: existing.milliseconds + incoming.milliseconds }
+        : { host: incoming.host, category: incoming.category, milliseconds: incoming.milliseconds };
+    }
+    activity.days[dateKey] = domains;
+  }
+  rules.categoryByHost = { ...(imported.rules?.categoryByHost ?? {}), ...rules.categoryByHost };
+  rules.excludedHosts = [...new Set([...(imported.rules?.excludedHosts ?? []), ...rules.excludedHosts])].sort();
+  await Promise.all([saveState(activity), saveRules(rules)]);
+  return Object.keys(imported.activity?.days ?? {}).length;
+}

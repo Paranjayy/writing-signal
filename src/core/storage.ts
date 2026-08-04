@@ -165,3 +165,17 @@ export function totalActivityMillis(day: DayStats): number {
 export async function clearAllData(): Promise<void> {
   await LocalStorage.removeItem(STORAGE_KEY);
 }
+
+export async function mergeImportedWritingState(input: unknown): Promise<number> {
+  const imported = normalizeState(input);
+  const state = await getState();
+  for (const [key, incoming] of Object.entries(imported.days)) {
+    const day = state.days[key] ?? emptyDay();
+    addCounts(day, incoming);
+    day.snapshots += incoming.snapshots;
+    for (const kind of ACTIVITY_KINDS) day.activityMillis[kind] += incoming.activityMillis[kind];
+    state.days[key] = day;
+  }
+  await saveState(state);
+  return Object.keys(imported.days).length;
+}
