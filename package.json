@@ -1,0 +1,92 @@
+{
+  "name": "writing-signal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private, local-first writing and clipboard insights for Raycast.",
+  "main": "src/dashboard.tsx",
+  "scripts": {
+    "dev": "ray develop",
+    "build": "ray build",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix"
+  },
+  "dependencies": {
+    "@raycast/api": "^1.104.24",
+    "@raycast/utils": "^2.2.7"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.0.4",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.2",
+    "eslint": "^8.57.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  },
+  "title": "Writing Signal",
+  "icon": "icon.png",
+  "author": "paranjay",
+  "license": "MIT",
+  "categories": ["Productivity", "Developer Tools"],
+  "platforms": ["macOS"],
+  "keywords": ["writing", "words", "clipboard", "privacy", "statistics"],
+  "commands": [
+      {
+        "name": "dashboard",
+        "title": "Open Writing Dashboard",
+        "description": "See local writing-time, text-pattern, and clipboard summaries.",
+        "mode": "view"
+      },
+      {
+        "name": "capture-writing-snapshot",
+        "title": "Capture Writing Snapshot",
+        "description": "Measure the selected text without storing its contents.",
+        "mode": "no-view",
+        "keywords": ["selected text", "measure"]
+      },
+      {
+        "name": "start-writing-session",
+        "title": "Start Writing Session",
+        "description": "Start an intentional local writing-time session.",
+        "mode": "no-view"
+      },
+      {
+        "name": "start-activity-timer",
+        "title": "Start Activity Timer",
+        "description": "Track writing, creating, focused work, or consuming.",
+        "mode": "view",
+        "keywords": ["time", "focus", "create", "watch"]
+      },
+      {
+        "name": "stop-writing-session",
+        "title": "Stop Writing Session",
+        "description": "Stop the active writing-time session.",
+        "mode": "no-view"
+      },
+      {
+        "name": "log-activity",
+        "title": "Log Past Activity",
+        "description": "Add time that already passed, without storing what you did.",
+        "mode": "view",
+        "keywords": ["backfill", "forgot", "time"]
+      },
+      {
+        "name": "clipboard-insights",
+        "title": "Open Clipboard Insights",
+        "description": "Inspect and classify the current clipboard without saving its contents.",
+        "mode": "view"
+      },
+      {
+        "name": "purge-clipboard",
+        "title": "Purge Clipboard",
+        "description": "Clear the current macOS clipboard after confirmation.",
+        "mode": "no-view"
+      },
+      {
+        "name": "privacy-and-data",
+        "title": "Open Privacy & Data",
+        "description": "Review local data handling or erase all Writing Signal data.",
+        "mode": "view",
+        "keywords": ["security", "delete", "encryption"]
+      }
+  ]
+}
