@@ -1,6 +1,12 @@
 import { Action, ActionPanel, Detail, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { CollectorApplication, getCollectorSummary, usageForDay, usageForRange } from "./core/collector";
+import {
+  CollectorApplication,
+  getCollectorSummary,
+  keyboardForAppDay,
+  usageForDay,
+  usageForRange,
+} from "./core/collector";
 import { formatDuration } from "./core/presentation";
 import { AppRuleForm } from "./app-rules";
 
@@ -14,13 +20,17 @@ export default function ScreenTime() {
   const weeklyUsage = usageForRange(summary, weekStart, new Date());
 
   function appItem(app: CollectorApplication, keyPrefix = "today") {
+    const keyboard = keyPrefix === "today" ? keyboardForAppDay(summary, app.bundleIdentifier) : undefined;
     return (
       <List.Item
         key={`${keyPrefix}-${app.bundleIdentifier}`}
         title={app.name}
         subtitle={app.category}
         icon={categoryIcon[app.category]}
-        accessories={[{ text: formatDuration(app.seconds) }]}
+        accessories={[
+          { text: formatDuration(app.seconds) },
+          ...(keyboard ? [{ text: `${keyboard.estimatedWords} est. words` }] : []),
+        ]}
         actions={
           <ActionPanel>
             <Action title="Refresh Screen Time" icon={Icon.ArrowClockwise} onAction={revalidate} />

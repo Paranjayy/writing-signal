@@ -30,6 +30,7 @@ export type CollectorSummary = {
   activeApplication?: { name: string; bundleIdentifier: string; category: CollectorCategory };
   days: Record<string, Record<string, CollectorApplication>>;
   keyboardByDay: Record<string, CollectorKeyboardSummary>;
+  keyboardByDayAndApplication?: Record<string, Record<string, CollectorKeyboardSummary>>;
 };
 
 type RuleFile = { schemaVersion: 1; categories: Record<string, CollectorCategory> };
@@ -124,4 +125,12 @@ export function usageForRange(
     }
   }
   return Object.values(merged).sort((left, right) => right.seconds - left.seconds);
+}
+
+export function keyboardForAppDay(
+  summary: CollectorSummary | undefined,
+  bundleIdentifier: string,
+  date = new Date(),
+): CollectorKeyboardSummary | undefined {
+  return summary?.keyboardByDayAndApplication?.[localDayKey(date)]?.[bundleIdentifier];
 }

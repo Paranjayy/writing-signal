@@ -31,7 +31,7 @@ swift run writing-signal-tracker --uninstall
 swift run writing-signal-tracker --keyboard
 ```
 
-This requires a macOS **Input Monitoring** permission prompt. It records only aggregate counts—key presses, separators, deletes, and estimated words—and never saves key values or text.
+This requires a macOS **Input Monitoring** permission prompt. It records only aggregate counts—key presses, separators, deletes, and estimated words—and never saves key values or text. The counts are attributed to the foreground app, so Raycast can show where the writing activity happened.
 
 For persistent keyboard aggregates, include the same explicit option at install time:
 

@@ -49,6 +49,7 @@ struct CollectorSummary: Codable {
   var activeApplication: ApplicationSnapshot?
   var days: [String: [String: ApplicationUsage]] = [:]
   var keyboardByDay: [String: KeyboardSummary] = [:]
+  var keyboardByDayAndApplication: [String: [String: KeyboardSummary]]?
 }
 
 private let writingBundles: Set<String> = [
@@ -202,6 +203,15 @@ final class Tracker: NSObject {
     var keyboard = summary.keyboardByDay[key] ?? KeyboardSummary()
     update(&keyboard)
     summary.keyboardByDay[key] = keyboard
+
+    guard let app = summary.activeApplication else { return }
+    var perDay = summary.keyboardByDayAndApplication ?? [:]
+    var perApplication = perDay[key] ?? [:]
+    var appKeyboard = perApplication[app.bundleIdentifier] ?? KeyboardSummary()
+    update(&appKeyboard)
+    perApplication[app.bundleIdentifier] = appKeyboard
+    perDay[key] = perApplication
+    summary.keyboardByDayAndApplication = perDay
   }
 
   private func installKeyboardTap() {
@@ -229,22 +239,31 @@ final class Tracker: NSObject {
 
   private func recordKey(_ event: CGEvent) {
     let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-    updateKeyboard { keyboard in
-      keyboard.keyDowns += 1
-      switch keyCode {
-      case 49, 36, 48: // space, return, tab
+    let wasInsideWord = currentlyInsideWord
+    let update: (inout KeyboardSummary) -> Void
+    switch keyCode {
+    case 49, 36, 48: // space, return, tab
+      currentlyInsideWord = false
+      update = { keyboard in
+        keyboard.keyDowns += 1
         keyboard.separators += 1
-        if currentlyInsideWord { keyboard.estimatedWords += 1 }
-        currentlyInsideWord = false
-      case 51: // delete
+        if wasInsideWord { keyboard.estimatedWords += 1 }
+      }
+    case 51: // delete
+      update = { keyboard in
+        keyboard.keyDowns += 1
         keyboard.deletions += 1
-      case 56, 58, 59, 60, 61, 62: // modifier keys
-        break
-      default:
+      }
+    case 56, 58, 59, 60, 61, 62: // modifier keys
+      update = { keyboard in keyboard.keyDowns += 1 }
+    default:
+      currentlyInsideWord = true
+      update = { keyboard in
+        keyboard.keyDowns += 1
         keyboard.printableKeyDowns += 1
-        currentlyInsideWord = true
       }
     }
+    updateKeyboard(update)
   }
 }
 
