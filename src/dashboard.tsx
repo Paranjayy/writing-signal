@@ -75,6 +75,11 @@ export default function Dashboard() {
             icon={Icon.Clock}
             onAction={() => launchCommand({ name: "start-focus-block", type: LaunchType.UserInitiated })}
           />
+          <Action
+            title="Daily Check-In Settings"
+            icon={Icon.Bell}
+            onAction={() => launchCommand({ name: "daily-review-settings", type: LaunchType.UserInitiated })}
+          />
           <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
         </ActionPanel>
       }
