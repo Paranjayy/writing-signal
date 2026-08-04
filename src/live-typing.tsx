@@ -1,5 +1,6 @@
 import { Action, ActionPanel, Detail, Icon } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
+import { useEffect } from "react";
 import { getCollectorSummary, isCollectorLive } from "./core/collector";
 import { formatNumber } from "./core/presentation";
 import KeyboardActivity from "./keyboard-activity";
@@ -7,6 +8,10 @@ import CollectorSetup from "./collector-setup";
 
 export default function LiveTyping() {
   const { data: summary, isLoading, revalidate } = usePromise(getCollectorSummary);
+  useEffect(() => {
+    const interval = setInterval(revalidate, 2_000);
+    return () => clearInterval(interval);
+  }, [revalidate]);
   const live = summary?.liveTyping;
   const collectorLive = isCollectorLive(summary);
   const enabled = summary?.settings.keyboardTrackingEnabled ?? false;
