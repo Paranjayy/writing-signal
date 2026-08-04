@@ -80,6 +80,11 @@ export default function Dashboard() {
             icon={Icon.Bell}
             onAction={() => launchCommand({ name: "daily-review-settings", type: LaunchType.UserInitiated })}
           />
+          <Action
+            title="Open Weekly Review"
+            icon={Icon.Calendar}
+            onAction={() => launchCommand({ name: "weekly-review", type: LaunchType.UserInitiated })}
+          />
           <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={openExtensionPreferences} />
         </ActionPanel>
       }
