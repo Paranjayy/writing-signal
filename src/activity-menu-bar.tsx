@@ -2,7 +2,7 @@ import { Icon, launchCommand, LaunchType, MenuBarExtra } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { getGoals } from "./core/goals";
-import { formatDuration } from "./core/presentation";
+import { formatActivityLabel, formatDuration } from "./core/presentation";
 import { dayKey, getState } from "./core/storage";
 
 export default function ActivityMenuBar() {
@@ -16,6 +16,7 @@ export default function ActivityMenuBar() {
   const total = usage.reduce((sum, app) => sum + app.seconds, 0);
   const active = isLive ? summary?.activeApplication : undefined;
   const today = data?.state.days[dayKey(new Date())];
+  const activeSession = data?.state.activeSession;
   const title = active ? `${formatDuration(total)} · ${active.name}` : "Activity";
 
   return (
@@ -36,6 +37,18 @@ export default function ActivityMenuBar() {
         />
         <MenuBarExtra.Item title={`Today: ${formatDuration(total)}`} />
       </MenuBarExtra.Section>
+      {activeSession && (
+        <MenuBarExtra.Section title="Intentional timer">
+          <MenuBarExtra.Item
+            title={`${formatActivityLabel(activeSession.kind)}${activeSession.plannedEndAt ? ` · ends ${new Date(activeSession.plannedEndAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : " · open-ended"}`}
+          />
+          <MenuBarExtra.Item
+            title="Stop Intentional Timer"
+            icon={Icon.Stop}
+            onAction={() => launchCommand({ name: "stop-writing-session", type: LaunchType.UserInitiated })}
+          />
+        </MenuBarExtra.Section>
+      )}
       {data &&
         (data.goals.dailyWords > 0 ||
           data.goals.dailyFocusMinutes > 0 ||
