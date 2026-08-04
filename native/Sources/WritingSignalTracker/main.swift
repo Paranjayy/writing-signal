@@ -65,13 +65,13 @@ struct CollectorSummary: Codable {
 }
 
 private let writingBundles: Set<String> = [
-  "com.apple.TextEdit", "com.apple.iWork.Pages", "md.obsidian", "notion.id", "com.microsoft.Word",
+  "com.apple.TextEdit", "com.apple.iWork.Pages", "md.obsidian", "notion.id", "com.microsoft.Word", "net.shinyfrog.bear", "com.soulmen.ulysses3", "pro.writer",
 ]
 private let creatingBundles: Set<String> = [
   "com.microsoft.VSCode", "com.apple.dt.Xcode", "com.figma.Desktop", "com.adobe.Photoshop", "com.adobe.illustrator",
 ]
 private let consumingBundles: Set<String> = [
-  "com.apple.TV", "com.spotify.client", "com.apple.Music", "com.apple.Safari", "com.google.Chrome", "company.thebrowser.Browser",
+  "com.apple.TV", "com.spotify.client", "com.apple.Music", "com.apple.Safari", "com.google.Chrome", "company.thebrowser.Browser", "org.mozilla.firefox", "com.microsoft.edgemac", "com.brave.Browser", "com.kagi.kagimacOS",
 ]
 
 func category(for bundleIdentifier: String) -> ActivityCategory {
