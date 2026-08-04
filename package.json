@@ -159,6 +159,13 @@
         "description": "See local foreground-app segments from today.",
         "mode": "view",
         "keywords": ["timeline", "history", "today"]
+      },
+      {
+        "name": "insights",
+        "title": "Open Personal Activity Insights",
+        "description": "See a local summary of writing, creating, consuming, apps, and browser activity.",
+        "mode": "view",
+        "keywords": ["summary", "balance", "weekly"]
       }
   ]
 }
