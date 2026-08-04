@@ -47,6 +47,7 @@ struct RuleFile: Codable {
   var excludedBundleIdentifiers: [String]?
   var idleAfterSeconds: TimeInterval?
   var pausedUntil: String?
+  var retentionDays: Int?
 }
 
 struct CollectorSummary: Codable {
@@ -163,6 +164,15 @@ final class RuleStore {
           let date = ISO8601DateFormatter().date(from: pausedUntil) else { return false }
     return date > Date()
   }
+
+  func retentionDays() -> Int? {
+    guard let data = try? Data(contentsOf: url),
+          let rules = try? decoder.decode(RuleFile.self, from: data),
+          rules.schemaVersion == 1,
+          let days = rules.retentionDays,
+          days >= 7 else { return nil }
+    return days
+  }
 }
 
 final class Tracker: NSObject {
@@ -231,8 +241,19 @@ final class Tracker: NSObject {
       summary.activeApplication = nextApplication
       summary.currentSegmentStartedAt = nextApplication == nil ? nil : now
     }
+    pruneExpiredHistory()
     summary.generatedAt = now
     store.save(summary)
+  }
+
+  private func pruneExpiredHistory() {
+    guard let retentionDays = ruleStore.retentionDays(),
+          let cutoff = Calendar.current.date(byAdding: .day, value: -(retentionDays - 1), to: Date()) else { return }
+    let cutoffKey = dayKey(cutoff)
+    summary.days = summary.days.filter { $0.key >= cutoffKey }
+    summary.keyboardByDay = summary.keyboardByDay.filter { $0.key >= cutoffKey }
+    summary.keyboardByDayAndApplication = summary.keyboardByDayAndApplication?.filter { $0.key >= cutoffKey }
+    summary.segmentsByDay = summary.segmentsByDay?.filter { $0.key >= cutoffKey }
   }
 
   private func isIdle() -> Bool {

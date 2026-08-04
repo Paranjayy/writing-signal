@@ -18,6 +18,7 @@ A local-first Raycast prototype for understanding writing effort without retaini
 - Optionally create a passphrase-encrypted AES-256-GCM backup; its passphrase is never stored.
 - Tune the native collector's local idle threshold, so inactive time does not get counted as screen time.
 - Pause all automatic app and keyboard aggregate tracking for a chosen time window.
+- Choose whether automatic app and keyboard aggregates are retained for 30 days, 90 days, one year, or indefinitely.
 
 ## Important boundaries
 

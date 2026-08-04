@@ -49,6 +49,7 @@ type RuleFile = {
   excludedBundleIdentifiers?: string[];
   idleAfterSeconds?: number;
   pausedUntil?: string;
+  retentionDays?: number;
 };
 
 function collectorDirectory(): string {
@@ -100,6 +101,12 @@ async function getRuleFile(): Promise<RuleFile> {
           pausedUntil:
             typeof parsed.pausedUntil === "string" && Number.isFinite(new Date(parsed.pausedUntil).getTime())
               ? parsed.pausedUntil
+              : undefined,
+          retentionDays:
+            typeof parsed.retentionDays === "number" &&
+            Number.isFinite(parsed.retentionDays) &&
+            parsed.retentionDays >= 7
+              ? Math.floor(parsed.retentionDays)
               : undefined,
         }
       : { schemaVersion: 1, categories: {}, excludedBundleIdentifiers: [] };
@@ -172,6 +179,19 @@ export async function getCollectorPausedUntil(): Promise<Date | undefined> {
 export async function setCollectorPausedUntil(until: Date | undefined): Promise<void> {
   const rules = await getRuleFile();
   rules.pausedUntil = until && until > new Date() ? until.toISOString() : undefined;
+  await writeRules(rules);
+}
+
+export async function getCollectorRetentionDays(): Promise<number | undefined> {
+  return (await getRuleFile()).retentionDays;
+}
+
+export async function setCollectorRetentionDays(days: number | undefined): Promise<void> {
+  if (days !== undefined && (!Number.isFinite(days) || days < 7)) {
+    throw new Error("Retention must be at least 7 days");
+  }
+  const rules = await getRuleFile();
+  rules.retentionDays = days === undefined ? undefined : Math.floor(days);
   await writeRules(rules);
 }
 

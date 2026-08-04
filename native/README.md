@@ -55,6 +55,10 @@ Use Raycast’s **Automatic Tracking Settings** command to choose how long no in
 
 Use **Pause Automatic Tracking** in Raycast to stop all automatic app-time and keyboard aggregate collection for 15 minutes, an hour, three hours, or until tomorrow. The collector applies the local pause immediately; no uninstall or restart is necessary.
 
+## History retention
+
+In **Automatic Tracking Settings**, choose to retain automatic aggregates for 30 days, 90 days, one year, or indefinitely. Shortening the retention period permanently removes older local app-time and keyboard aggregates when the collector next writes its summary; Raycast asks for confirmation first.
+
 ## Limits of this first companion
 
 - It tracks while the process is running; a signed app plus user-approved launch agent is the next packaging step.
