@@ -6,6 +6,16 @@ import { BrowserRuleForm } from "./browser-rules";
 import { ExcludeBrowserForm } from "./browser-exclusions";
 
 const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: Icon.Play, other: Icon.Circle };
+const categories = ["writing", "creating", "consuming", "other"] as const;
+
+function categoryTotals(usage: DomainUsage[]): Record<(typeof categories)[number], number> {
+  return usage.reduce((totals, item) => ({ ...totals, [item.category]: totals[item.category] + item.milliseconds }), {
+    writing: 0,
+    creating: 0,
+    consuming: 0,
+    other: 0,
+  });
+}
 
 export default function BrowserTime() {
   const { data, isLoading, revalidate } = usePromise(async () => {
@@ -13,7 +23,7 @@ export default function BrowserTime() {
     const weekStart = new Date(now);
     weekStart.setDate(weekStart.getDate() - 6);
     const [today, week] = await Promise.all([getBrowserUsage(now, now), getBrowserUsage(weekStart, now)]);
-    return { today, week };
+    return { today, week, todayCategories: categoryTotals(today), weekCategories: categoryTotals(week) };
   });
 
   function domainItem(usage: DomainUsage, prefix: string) {
@@ -46,11 +56,31 @@ export default function BrowserTime() {
 
   return (
     <List isLoading={isLoading} navigationTitle="Browser Time" searchBarPlaceholder="Filter domains">
+      <List.Section title="Today’s browser balance">
+        {categories.map((category) => (
+          <List.Item
+            key={`today-${category}`}
+            title={category}
+            icon={categoryIcon[category]}
+            accessories={[{ text: formatDuration(data?.todayCategories[category] ?? 0) }]}
+          />
+        ))}
+      </List.Section>
       <List.Section title="Today" subtitle={`${data?.today.length ?? 0} domains`}>
         {(data?.today ?? []).map((usage) => domainItem(usage, "today"))}
       </List.Section>
       <List.Section title="Last 7 Days" subtitle={`${data?.week.length ?? 0} domains`}>
         {(data?.week ?? []).map((usage) => domainItem(usage, "week"))}
+      </List.Section>
+      <List.Section title="Last 7 days by category">
+        {categories.map((category) => (
+          <List.Item
+            key={`week-${category}`}
+            title={category}
+            icon={categoryIcon[category]}
+            accessories={[{ text: formatDuration(data?.weekCategories[category] ?? 0) }]}
+          />
+        ))}
       </List.Section>
     </List>
   );
