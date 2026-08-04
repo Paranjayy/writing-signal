@@ -91,6 +91,24 @@ export async function removeCollectorRule(bundleIdentifier: string): Promise<voi
 }
 
 export function usageForDay(summary: CollectorSummary | undefined, date = new Date()): CollectorApplication[] {
+  return usageForRange(summary, date, date);
+}
+
+export function usageForRange(
+  summary: CollectorSummary | undefined,
+  from: Date,
+  through: Date,
+): CollectorApplication[] {
   if (!summary) return [];
-  return Object.values(summary.days[localDayKey(date)] ?? {}).sort((left, right) => right.seconds - left.seconds);
+  const fromKey = localDayKey(from);
+  const throughKey = localDayKey(through);
+  const merged: Record<string, CollectorApplication> = {};
+  for (const [date, apps] of Object.entries(summary.days)) {
+    if (date < fromKey || date > throughKey) continue;
+    for (const app of Object.values(apps)) {
+      const existing = merged[app.bundleIdentifier];
+      merged[app.bundleIdentifier] = existing ? { ...existing, seconds: existing.seconds + app.seconds } : { ...app };
+    }
+  }
+  return Object.values(merged).sort((left, right) => right.seconds - left.seconds);
 }

@@ -1,6 +1,6 @@
 import { Action, ActionPanel, Detail, Icon, List } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
-import { getCollectorSummary, usageForDay } from "./core/collector";
+import { CollectorApplication, getCollectorSummary, usageForDay, usageForRange } from "./core/collector";
 import { formatDuration } from "./core/presentation";
 import { AppRuleForm } from "./app-rules";
 
@@ -9,6 +9,32 @@ const categoryIcon = { writing: Icon.Pencil, creating: Icon.Hammer, consuming: I
 export default function ScreenTime() {
   const { data: summary, isLoading, revalidate } = usePromise(getCollectorSummary);
   const usage = usageForDay(summary);
+  const weekStart = new Date();
+  weekStart.setDate(weekStart.getDate() - 6);
+  const weeklyUsage = usageForRange(summary, weekStart, new Date());
+
+  function appItem(app: CollectorApplication, keyPrefix = "today") {
+    return (
+      <List.Item
+        key={`${keyPrefix}-${app.bundleIdentifier}`}
+        title={app.name}
+        subtitle={app.category}
+        icon={categoryIcon[app.category]}
+        accessories={[{ text: formatDuration(app.seconds) }]}
+        actions={
+          <ActionPanel>
+            <Action title="Refresh Screen Time" icon={Icon.ArrowClockwise} onAction={revalidate} />
+            <Action.Push
+              title="Set App Category"
+              icon={Icon.Pencil}
+              target={<AppRuleForm bundleIdentifier={app.bundleIdentifier} />}
+            />
+            <Action.CopyToClipboard title="Copy Bundle Identifier" content={app.bundleIdentifier} />
+          </ActionPanel>
+        }
+      />
+    );
+  }
 
   if (!isLoading && !summary) {
     return (
@@ -21,26 +47,10 @@ export default function ScreenTime() {
   return (
     <List isLoading={isLoading} navigationTitle="Automatic Screen Time" searchBarPlaceholder="Filter apps">
       <List.Section title="Today" subtitle={`${usage.length} apps`}>
-        {usage.map((app) => (
-          <List.Item
-            key={app.bundleIdentifier}
-            title={app.name}
-            subtitle={app.category}
-            icon={categoryIcon[app.category]}
-            accessories={[{ text: formatDuration(app.seconds) }]}
-            actions={
-              <ActionPanel>
-                <Action title="Refresh Screen Time" icon={Icon.ArrowClockwise} onAction={revalidate} />
-                <Action.Push
-                  title="Set App Category"
-                  icon={Icon.Pencil}
-                  target={<AppRuleForm bundleIdentifier={app.bundleIdentifier} />}
-                />
-                <Action.CopyToClipboard title="Copy Bundle Identifier" content={app.bundleIdentifier} />
-              </ActionPanel>
-            }
-          />
-        ))}
+        {usage.map((app) => appItem(app))}
+      </List.Section>
+      <List.Section title="Last 7 Days" subtitle={`${weeklyUsage.length} apps`}>
+        {weeklyUsage.map((app) => appItem(app, "week"))}
       </List.Section>
     </List>
   );
