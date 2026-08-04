@@ -3,19 +3,21 @@ import { usePromise } from "@raycast/utils";
 import { getCollectorSummary, isCollectorLive, usageForDay } from "./core/collector";
 import { getBrowserUsage } from "./core/browser";
 import { aggregateClipboardHistory, getClipboardHistory } from "./core/clipboard-history";
+import { getDailyReviewHour } from "./core/daily-review";
 import { activeSessionMillisSince, aggregateDays, dayKey, getState } from "./core/storage";
 import { dashboardMarkdown } from "./core/presentation";
 
 export default function Dashboard() {
   const { data, isLoading, revalidate } = usePromise(async () => {
     const now = new Date();
-    const [state, collector, browserUsage, clipboardHistory] = await Promise.all([
+    const [state, collector, browserUsage, clipboardHistory, dailyReviewHour] = await Promise.all([
       getState(),
       getCollectorSummary(),
       getBrowserUsage(now, now),
       getClipboardHistory(),
+      getDailyReviewHour(),
     ]);
-    return { state, collector, browserUsage, clipboardHistory, now };
+    return { state, collector, browserUsage, clipboardHistory, dailyReviewHour, now };
   });
   const state = data?.state;
   const collector = data?.collector;
@@ -65,6 +67,10 @@ export default function Dashboard() {
             }
           />
           <Detail.Metadata.Label title="Today" text={dayKey(now)} />
+          <Detail.Metadata.Label
+            title="Daily check-in"
+            text={data?.dailyReviewHour === undefined ? "Off" : `${data.dailyReviewHour}:00 local time`}
+          />
         </Detail.Metadata>
       }
       actions={
