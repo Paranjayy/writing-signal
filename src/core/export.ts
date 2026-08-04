@@ -5,6 +5,7 @@ import path from "path";
 import { promisify } from "util";
 import { getBrowserExport } from "./browser";
 import { getCollectorRules, getCollectorSummary } from "./collector";
+import { getClipboardPatternExport } from "./clipboard-history";
 import { getGoals } from "./goals";
 import { getState } from "./storage";
 
@@ -19,10 +20,11 @@ function timestamp(): string {
 }
 
 export async function createExportSnapshot(): Promise<string> {
-  const [writing, goals, browser, collector, collectorRules] = await Promise.all([
+  const [writing, goals, browser, clipboardPatterns, collector, collectorRules] = await Promise.all([
     getState(),
     getGoals(),
     getBrowserExport(),
+    getClipboardPatternExport(),
     getCollectorSummary(),
     getCollectorRules(),
   ]);
@@ -35,6 +37,7 @@ export async function createExportSnapshot(): Promise<string> {
       writing,
       goals,
       browser,
+      clipboardPatterns,
       collector: { summary: collector, rules: collectorRules },
     },
     null,

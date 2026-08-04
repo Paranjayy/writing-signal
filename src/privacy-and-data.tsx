@@ -11,6 +11,7 @@ import {
 } from "@raycast/api";
 import { clearCollectorData } from "./core/collector";
 import { clearBrowserData } from "./core/browser";
+import { clearClipboardHistory } from "./core/clipboard-history";
 import { clearGoals } from "./core/goals";
 import { clearAllData } from "./core/storage";
 
@@ -19,6 +20,7 @@ const markdown = `# Privacy & Data
 ## What is stored
 
 - Day-level totals for time, word counts, and text categories.
+- If you explicitly enable Clipboard Pattern Tracking: day-level copy and text-shape totals.
 - A temporary comparison baseline used to calculate the next selected-text delta.
 - The start time and mode of one active timer, when present.
 
@@ -35,6 +37,8 @@ This Raycast prototype uses Raycast's local encrypted storage. There is intentio
 ## Native collector bridge
 
 The optional macOS collector writes an owner-only local summary containing app names, broad categories, durations, and—if explicitly enabled—keyboard aggregates. It does not write text. This narrow summary lets Raycast display automatic Screen Time; a passphrase-encrypted detailed vault is the next companion milestone.
+
+Clipboard Pattern Tracking uses a keyed local fingerprint only to avoid counting the same clipboard text repeatedly. The text and the fingerprint key are never included in exports.
 `;
 
 export default function PrivacyAndData() {
@@ -46,7 +50,13 @@ export default function PrivacyAndData() {
       primaryAction: { title: "Erase Local Data", style: Alert.ActionStyle.Destructive },
     });
     if (!confirmed) return;
-    await Promise.all([clearAllData(), clearGoals(), clearCollectorData(), clearBrowserData()]);
+    await Promise.all([
+      clearAllData(),
+      clearGoals(),
+      clearCollectorData(),
+      clearBrowserData(),
+      clearClipboardHistory(),
+    ]);
     await showHUD("Writing Signal data erased");
   }
 

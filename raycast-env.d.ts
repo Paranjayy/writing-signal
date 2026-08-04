@@ -27,6 +27,10 @@ declare namespace Preferences {
   export type LogActivity = ExtensionPreferences & {}
   /** Preferences accessible in the `clipboard-insights` command */
   export type ClipboardInsights = ExtensionPreferences & {}
+  /** Preferences accessible in the `clipboard-pulse` command */
+  export type ClipboardPulse = ExtensionPreferences & {}
+  /** Preferences accessible in the `clipboard-patterns` command */
+  export type ClipboardPatterns = ExtensionPreferences & {}
   /** Preferences accessible in the `purge-clipboard` command */
   export type PurgeClipboard = ExtensionPreferences & {}
   /** Preferences accessible in the `privacy-and-data` command */
@@ -84,6 +88,10 @@ declare namespace Arguments {
   export type LogActivity = {}
   /** Arguments passed to the `clipboard-insights` command */
   export type ClipboardInsights = {}
+  /** Arguments passed to the `clipboard-pulse` command */
+  export type ClipboardPulse = {}
+  /** Arguments passed to the `clipboard-patterns` command */
+  export type ClipboardPatterns = {}
   /** Arguments passed to the `purge-clipboard` command */
   export type PurgeClipboard = {}
   /** Arguments passed to the `privacy-and-data` command */

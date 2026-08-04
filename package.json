@@ -76,6 +76,21 @@
         "mode": "view"
       },
       {
+        "name": "clipboard-pulse",
+        "title": "Enable Clipboard Pattern Tracking",
+        "description": "Track local clipboard text patterns without storing clipboard content.",
+        "mode": "no-view",
+        "interval": "1m",
+        "keywords": ["clipboard", "patterns", "aggregate"]
+      },
+      {
+        "name": "clipboard-patterns",
+        "title": "Open Clipboard Patterns",
+        "description": "See local aggregate clipboard copy patterns from the enabled tracker.",
+        "mode": "view",
+        "keywords": ["clipboard", "copies", "stats"]
+      },
+      {
         "name": "purge-clipboard",
         "title": "Purge Clipboard",
         "description": "Clear the current macOS clipboard after confirmation.",

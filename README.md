@@ -11,6 +11,7 @@ A local-first Raycast prototype for understanding writing effort without retaini
 - Keep a glanceable current-app and daily-total readout in the Raycast menu bar.
 - Optionally track active browser hostnames in Raycast background refresh; URL paths and page content are discarded.
 - Inspect the current clipboard's shape and explicitly clear the clipboard.
+- Optionally collect clipboard copy patterns as day-level totals; clipboard contents are never saved.
 - Set optional daily writing, focus, and creating targets; they are progress cues, not streaks.
 - Export a portable local JSON snapshot to an owner-only file in `Documents/Writing Signal Backups`.
 - Optionally create a passphrase-encrypted AES-256-GCM backup; its passphrase is never stored.

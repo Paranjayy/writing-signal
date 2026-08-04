@@ -1,4 +1,14 @@
-import { Action, ActionPanel, Clipboard, Detail, Icon, showToast, Toast } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  Clipboard,
+  Detail,
+  Icon,
+  LaunchType,
+  launchCommand,
+  showToast,
+  Toast,
+} from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { classifyText } from "./core/classify";
 import { tokenBreakdown } from "./core/presentation";
@@ -54,6 +64,11 @@ export default function ClipboardInsights() {
               await Clipboard.copy(String(count));
               await showToast({ style: Toast.Style.Success, title: "Character count copied" });
             }}
+          />
+          <Action
+            title="Open Clipboard Patterns"
+            icon={Icon.BarChart}
+            onAction={() => launchCommand({ name: "clipboard-patterns", type: LaunchType.UserInitiated })}
           />
         </ActionPanel>
       }
