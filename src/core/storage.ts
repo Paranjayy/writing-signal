@@ -78,7 +78,12 @@ export async function recordSnapshot(counts: TokenCounts): Promise<TokenCounts> 
 }
 
 export async function startActivitySession(kind: ActivityKind, plannedEndAt?: Date): Promise<boolean> {
-  const state = await getState();
+  let state = await getState();
+  const previousPlannedEnd = state.activeSession?.plannedEndAt ? new Date(state.activeSession.plannedEndAt) : undefined;
+  if (previousPlannedEnd && previousPlannedEnd <= new Date()) {
+    await stopActivitySession(previousPlannedEnd);
+    state = await getState();
+  }
   if (state.activeSession) return false;
   state.activeSession = {
     startedAt: new Date().toISOString(),
