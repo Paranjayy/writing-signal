@@ -47,3 +47,4 @@ For automatic app time, open **Set Up Automatic Tracking** in Raycast. In this d
 - **Purge Clipboard** clears only the currently exposed clipboard, after confirmation.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data model and future-client boundary.
+See [docs/PORTABLE_FORMAT.md](docs/PORTABLE_FORMAT.md) for the versioned plain and encrypted migration format.
